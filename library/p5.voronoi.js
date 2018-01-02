@@ -1,6 +1,8 @@
 
 //https://github.com/gorhill/Javascript-Voronoi
 
+var voronoiDiagram;
+
 (function() {
 
 	var imgWidth;
@@ -12,7 +14,6 @@
 	var randomMinimumDist = 0;
 
 	var voronoiObj = new Voronoi();
-	var voronoiDiagram;
 
 	var colors = [];
 
@@ -34,6 +35,7 @@
 
 	/*
 	Set random minimum distance
+	- Minimum distance includes distance to custom sites
 	*/
 	p5.prototype.voronoiRndMinDist = function(newMinimum){
 		randomMinimumDist = newMinimum;				
