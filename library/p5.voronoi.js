@@ -9,6 +9,7 @@
 	var sites = [];
 
 	var nRandoms;
+	var randomMinimumDist = 0;
 
 	var voronoiObj = new Voronoi();
 	var voronoiDiagram;
@@ -20,34 +21,58 @@
 	var siteStrokeWeight = 3;
 	var siteStroke = 0;
 
-	//Add Random Sites
-	p5.prototype.voronoiRndSites = function(n){
+	/*
+	Add Random Sites
+	- Can set minimum distance between randoms
+	- If not set, old value is preserved
+	*/
+	p5.prototype.voronoiRndSites = function(n, newMinimum){
 		nRandoms = n;
+		if(newMinimum !== undefined)
+			randomMinimumDist = newMinimum;		
 	}
 
-	//Add custom sites
+	/*
+	Set random minimum distance
+	*/
+	p5.prototype.voronoiRndMinDist = function(newMinimum){
+		randomMinimumDist = newMinimum;				
+	}
+
+	/*
+	Add custom sites
+	- newSites format is [[5,5],[10,10],[15,15],[20,20]]
+	*/
 	p5.prototype.voronoiSites = function(newSites){
 		for (var i = 0; i < newSites.length; i++) {
 			sites.push({x:newSites[i][0],y:newSites[i][1]});
 		}
 	}
 
-	//Add custom site
-	p5.prototype.voronoiSite = function(newSite){
-		sites.push({x:newSite[0], y:newSite[1]});
+	/*
+	Add custom site
+	//TODO Possibility to add color
+	*/
+	p5.prototype.voronoiSite = function(nx, ny){
+		sites.push({x:nx, y:ny});
 	}
 
-	//Remove custom site
-	p5.prototype.voronoiRemoveSite = function(remSite){
+	/*
+	Remove custom site
+	- remSite format is [x,y]
+	*/
+	p5.prototype.voronoiRemoveSite = function(dx, dy){
 		for (var i = 0; i < sites.length; i++) {
-			if(sites[i].x == remSite.x && sites[i].y == remSite.y)
-				sites = sites.splice(i, 1);
+			if(sites[i].x == dx && sites[i].y == dy){
+				sites.splice(i, 1);
+				return;
+			}
 		}
 	}
 
 	//Remove all custom sites
-	p5.prototype.voronoiClear = function(){
-		sites.clear();
+	p5.prototype.voronoiClearSites = function(){
+		sites = [];
 	}
 
 	//Get Cell id in position
@@ -64,24 +89,6 @@
 			if(insidePoly([x,y],polyVertexes))
 				return voronoiDiagram.cells[i].site.voronoiId;
 		}
-	}
-
-	//Check if point is inside polygon poly
-	p5.prototype.insidePoly = function(point, poly){
-
-		var x = point[0], y = point[1];
-	    
-	    var inside = false;
-	    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-	        var xi = poly[i][0], yi = poly[i][1];
-	        var xj = poly[j][0], yj = poly[j][1];
-	        
-	        var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-	        if (intersect)
-	        	inside = !inside;
-	    }
-	    
-	    return inside;
 	}
 
 	//Render
@@ -116,21 +123,46 @@
 		voronoiDiagram = voronoiObj.compute(sites,{xl:0, xr:width, yt:0, yb:height});
 	}
 
-	//TODO Add random colors to cells
-	p5.prototype.voronoiRandomColors = function(){
-		
-	}
-
 	//TODO Get voronoi polygons (with neighbors?)
 	p5.prototype.voronoiPolys = function(){
 		var cells = []
 	}
 
+	//Check if point is inside polygon
+	function insidePoly(point, poly){
+
+		var x = point[0], y = point[1];
+	    
+	    var inside = false;
+	    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+	        var xi = poly[i][0], yi = poly[i][1];
+	        var xj = poly[j][0], yj = poly[j][1];
+	        
+	        var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+	        if (intersect)
+	        	inside = !inside;
+	    }
+	    
+	    return inside;
+	}
+
 	//Add Random Sites
 	function setRandoms(width, height){
 		for (var i = 0; i < nRandoms; i++) {
+			var flag;
 			var nX = round(random(0,width));
 			var nY = round(random(0,height));
+			if (randomMinimumDist > 0) {
+				do{
+					flag = false;
+					nX = round(random(0,width));
+					nY = round(random(0,height));
+					for (var j = 0; j < sites.length; j++) {
+						if(dist2D(nX, nY, sites[j].x, sites[j].y) < randomMinimumDist)
+							flag = true;
+					}
+				}while(flag == true)
+			}			
 			sites.push({x:nX, y:nY});
 		}
 	}
