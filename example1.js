@@ -22,6 +22,4 @@ function setup() {
 
 	console.log(voronoiGetSite(20,20));
 
-	console.log(voronoiDiagram);
-
 }

@@ -154,6 +154,8 @@ var voronoiDiagram;
 			var flag;
 			var nX = round(random(0,width));
 			var nY = round(random(0,height));
+			var triesLimit = 500;
+			var tries = 0;
 			if (randomMinimumDist > 0) {
 				do{
 					flag = false;
@@ -163,9 +165,13 @@ var voronoiDiagram;
 						if(dist2D(nX, nY, sites[j].x, sites[j].y) < randomMinimumDist)
 							flag = true;
 					}
-				}while(flag == true)
-			}			
+					tries++;
+				}while(flag == true && tries <= triesLimit)
+			}
 			sites.push({x:nX, y:nY});
+			//Warn about maximum tries reached
+			if (tries >= triesLimit)
+				console.log("Warning: setRandoms tries limit reached: minimum distance(" + randomMinimumDist + ") might be too big for size/number of sites");
 		}
 	}
 
