@@ -3,6 +3,10 @@
 
 var voronoiDiagram;
 
+const VOR_CELLDRAW_BOUNDED = 1;
+const VOR_CELLDRAW_VERTEX = 2;
+const VOR_CELLDRAW_SITE = 3;
+
 (function() {
 
 	var imgWidth;
@@ -93,6 +97,24 @@ var voronoiDiagram;
 		}
 	}
 
+	//Check if point is inside polygon
+	function insidePoly(point, poly){
+
+		var x = point[0], y = point[1];
+	    
+	    var inside = false;
+	    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+	        var xi = poly[i][0], yi = poly[i][1];
+	        var xj = poly[j][0], yj = poly[j][1];
+	        
+	        var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+	        if (intersect)
+	        	inside = !inside;
+	    }
+	    
+	    return inside;
+	}
+
 	//Render
 	p5.prototype.voronoiDraw = function(x, y){
 
@@ -125,29 +147,6 @@ var voronoiDiagram;
 		voronoiDiagram = voronoiObj.compute(sites,{xl:0, xr:width, yt:0, yb:height});
 	}
 
-	//TODO Get voronoi polygons (with neighbors?)
-	p5.prototype.voronoiPolys = function(){
-		var cells = []
-	}
-
-	//Check if point is inside polygon
-	function insidePoly(point, poly){
-
-		var x = point[0], y = point[1];
-	    
-	    var inside = false;
-	    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-	        var xi = poly[i][0], yi = poly[i][1];
-	        var xj = poly[j][0], yj = poly[j][1];
-	        
-	        var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-	        if (intersect)
-	        	inside = !inside;
-	    }
-	    
-	    return inside;
-	}
-
 	//Add Random Sites
 	function setRandoms(width, height){
 		for (var i = 0; i < nRandoms; i++) {
@@ -173,6 +172,49 @@ var voronoiDiagram;
 			if (tries >= triesLimit)
 				console.log("Warning: setRandoms tries limit reached: minimum distance(" + randomMinimumDist + ") might be too big for size/number of sites");
 		}
+	}
+
+	//TODO Get voronoi cell neighbors
+	p5.prototype.voronoiNeighbors = function(id){
+
+	}
+
+	//TODO Draw a voronoi Cell
+	p5.prototype.voronoiDrawCell = function(x, y, id, type){
+		var halfedges = voronoiDiagram.cells[id].halfedges;
+		if (type == VOR_CELLDRAW_BOUNDED) {
+			drawCellBounded(x, y, halfedges);
+		}else if(type == VOR_CELLDRAW_VERTEX){
+
+		}else if(type == VOR_CELLDRAW_SITE){
+
+		}
+	}
+
+	//Draw Cell Bounded
+	function drawCellBounded(x, y, halfedges){
+
+		//Stroke Settings
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
+
+		//Find minimums
+		let minX = Number.MAX_VALUE;
+		let minY = Number.MAX_VALUE;
+		for (var i = 0; i < halfedges.length; i++) {
+			if (halfedges[i].getStartpoint().x < minX)
+				minX = halfedges[i].getStartpoint().x;
+			if (halfedges[i].getStartpoint().y < minY)
+				minY = halfedges[i].getStartpoint().y;
+		}
+
+		//Draw
+		beginShape();
+		for (var i = 0; i < halfedges.length; i++) {
+			vertex(halfedges[i].getStartpoint().x - minX + x, halfedges[i].getStartpoint().y - minY + y);
+		}
+		endShape(CLOSE);
+
 	}
 
 	//Eucledian Distance
