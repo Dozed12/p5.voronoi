@@ -182,17 +182,20 @@ const VOR_CELLDRAW_SITE = 3;
 	//TODO Draw a voronoi Cell
 	p5.prototype.voronoiDrawCell = function(x, y, id, type){
 		var halfedges = voronoiDiagram.cells[id].halfedges;
+		var siteX = voronoiDiagram.cells[id].site.x;
+		var siteY = voronoiDiagram.cells[id].site.y;
 		if (type == VOR_CELLDRAW_BOUNDED) {
-			drawCellBounded(x, y, halfedges);
+			drawCellBounded(x, y, halfedges, siteX, siteY);
 		}else if(type == VOR_CELLDRAW_VERTEX){
 
 		}else if(type == VOR_CELLDRAW_SITE){
 
 		}
+
 	}
 
 	//Draw Cell Bounded
-	function drawCellBounded(x, y, halfedges){
+	function drawCellBounded(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
 		strokeWeight(cellStrokeWeight);
@@ -214,6 +217,11 @@ const VOR_CELLDRAW_SITE = 3;
 			vertex(halfedges[i].getStartpoint().x - minX + x, halfedges[i].getStartpoint().y - minY + y);
 		}
 		endShape(CLOSE);
+
+		//Draw Site
+		strokeWeight(siteStrokeWeight);
+		stroke(siteStroke);
+		point(siteX - minX + x, siteY - minY + y);
 
 	}
 
