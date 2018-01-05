@@ -22,6 +22,11 @@ function setup() {
 
 	console.log(voronoiGetSite(20,20));
 
-	voronoiDrawCell(800,0,30,VOR_CELLDRAW_BOUNDED);
+	voronoiDrawCell(800,10,30,VOR_CELLDRAW_BOUNDED);
+
+	voronoiDrawCell(800,300,30,VOR_CELLDRAW_SITE);
+
+	line(800,10,800,300);
+	line(800,10,900,10);
 
 }

@@ -189,7 +189,7 @@ const VOR_CELLDRAW_SITE = 3;
 		}else if(type == VOR_CELLDRAW_VERTEX){
 
 		}else if(type == VOR_CELLDRAW_SITE){
-
+			drawCellSite(x, y, halfedges, siteX, siteY);
 		}
 
 	}
@@ -222,6 +222,29 @@ const VOR_CELLDRAW_SITE = 3;
 		strokeWeight(siteStrokeWeight);
 		stroke(siteStroke);
 		point(siteX - minX + x, siteY - minY + y);
+
+	}
+
+	//Draw Cell Site
+	function drawCellSite(x, y, halfedges, siteX, siteY){
+
+		//Stroke Settings
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
+
+		//Draw
+		beginShape();
+		for (var i = 0; i < halfedges.length; i++) {
+			let dX = halfedges[i].getStartpoint().x - siteX;
+			let dY = halfedges[i].getStartpoint().y - siteY;
+			vertex(x+dX, y+dY);
+		}
+		endShape(CLOSE);
+
+		//Draw Site
+		strokeWeight(siteStrokeWeight);
+		stroke(siteStroke);
+		point(x, y);
 
 	}
 
