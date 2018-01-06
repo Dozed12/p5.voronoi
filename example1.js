@@ -26,7 +26,15 @@ function setup() {
 
 	voronoiDrawCell(800,300,30,VOR_CELLDRAW_SITE);
 
-	line(800,10,800,300);
-	line(800,10,900,10);
+	voronoiDrawCell(800,500,30,VOR_CELLDRAW_CENTER);
+
+	//Vertical Line
+	line(800,10,800,800);
+	//Horizontal Line 1
+	line(800,10,1000,10);
+	//Horizontal Line 2
+	line(800,300,1000,300);
+	//Horizontal Line 3
+	line(800,500,1000,500);
 
 }

@@ -4,7 +4,7 @@
 var voronoiDiagram;
 
 const VOR_CELLDRAW_BOUNDED = 1;
-const VOR_CELLDRAW_VERTEX = 2;
+const VOR_CELLDRAW_CENTER = 2;
 const VOR_CELLDRAW_SITE = 3;
 
 (function() {
@@ -186,8 +186,8 @@ const VOR_CELLDRAW_SITE = 3;
 		var siteY = voronoiDiagram.cells[id].site.y;
 		if (type == VOR_CELLDRAW_BOUNDED) {
 			drawCellBounded(x, y, halfedges, siteX, siteY);
-		}else if(type == VOR_CELLDRAW_VERTEX){
-
+		}else if(type == VOR_CELLDRAW_CENTER){
+			drawCellCenter(x, y, halfedges, siteX, siteY);
 		}else if(type == VOR_CELLDRAW_SITE){
 			drawCellSite(x, y, halfedges, siteX, siteY);
 		}
@@ -222,6 +222,46 @@ const VOR_CELLDRAW_SITE = 3;
 		strokeWeight(siteStrokeWeight);
 		stroke(siteStroke);
 		point(siteX - minX + x, siteY - minY + y);
+
+	}
+
+	//Draw Cell Centered
+	function drawCellCenter(x, y, halfedges, siteX, siteY){
+
+		//Stroke Settings
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
+
+		//Find minimums and maximums
+		let minX = Number.MAX_VALUE;
+		let minY = Number.MAX_VALUE;
+		let maxX = 0;
+		let maxY = 0;
+		for (var i = 0; i < halfedges.length; i++) {
+			if (halfedges[i].getStartpoint().x < minX)
+				minX = halfedges[i].getStartpoint().x;
+			if (halfedges[i].getStartpoint().y < minY)
+				minY = halfedges[i].getStartpoint().y;
+			if (halfedges[i].getStartpoint().x > maxX)
+				maxX = halfedges[i].getStartpoint().x;
+			if (halfedges[i].getStartpoint().y > maxY)
+				maxY = halfedges[i].getStartpoint().y;
+		}
+
+		let dX = maxX - minX;
+		let dY = maxY - minY;
+
+		//Draw
+		beginShape();
+		for (var i = 0; i < halfedges.length; i++) {
+			vertex(halfedges[i].getStartpoint().x - minX + x - dX/2, halfedges[i].getStartpoint().y - minY + y - dY/2);
+		}
+		endShape(CLOSE);
+
+		//Draw Site
+		strokeWeight(siteStrokeWeight);
+		stroke(siteStroke);
+		point(siteX - minX + x - dX/2, siteY - minY + y - dY/2);
 
 	}
 
