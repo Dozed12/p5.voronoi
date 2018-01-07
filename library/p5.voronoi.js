@@ -19,7 +19,7 @@ const VOR_CELLDRAW_SITE = 3;
 
 	var voronoiObj = new Voronoi();
 
-	var colors = [];
+	var cellColors = [];
 
 	var cellStrokeWeight = 1;
 	var cellStroke = 0;
@@ -52,6 +52,7 @@ const VOR_CELLDRAW_SITE = 3;
 	p5.prototype.voronoiSites = function(newSites){
 		for (var i = 0; i < newSites.length; i++) {
 			sites.push({x:newSites[i][0],y:newSites[i][1]});
+			cellColors.push(color(random(0,255),random(0,255),random(0,255)));
 		}
 	}
 
@@ -61,6 +62,7 @@ const VOR_CELLDRAW_SITE = 3;
 	*/
 	p5.prototype.voronoiSite = function(nx, ny){
 		sites.push({x:nx, y:ny});
+		cellColors.push(color(random(0,255),random(0,255),random(0,255)));
 	}
 
 	/*
@@ -122,6 +124,11 @@ const VOR_CELLDRAW_SITE = 3;
 		strokeWeight(cellStrokeWeight);
 		stroke(cellStroke);
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
+
+			//Load Color
+			fill(cellColors[i]);
+
+			//Shape
 			beginShape();
 			for (var j = 0; j < voronoiDiagram.cells[i].halfedges.length; j++) {
 				var halfEdge = voronoiDiagram.cells[i].halfedges[j];
@@ -150,6 +157,10 @@ const VOR_CELLDRAW_SITE = 3;
 	//Add Random Sites
 	function setRandoms(width, height){
 		for (var i = 0; i < nRandoms; i++) {
+
+			//Load Color
+			cellColors.push(color(random(0,255),random(0,255),random(0,255)));
+
 			var flag;
 			var nX = round(random(0,width));
 			var nY = round(random(0,height));
@@ -184,6 +195,9 @@ const VOR_CELLDRAW_SITE = 3;
 		var halfedges = voronoiDiagram.cells[id].halfedges;
 		var siteX = voronoiDiagram.cells[id].site.x;
 		var siteY = voronoiDiagram.cells[id].site.y;
+
+		fill(cellColors[id]);
+
 		if (type == VOR_CELLDRAW_BOUNDED) {
 			drawCellBounded(x, y, halfedges, siteX, siteY);
 		}else if(type == VOR_CELLDRAW_CENTER){
