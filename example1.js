@@ -14,6 +14,8 @@ function setup() {
 		voronoiSite(i*10, 20);
 	}
 
+	voronoiSite(200,200,color(255,255,255));
+
 	//voronoiClearSites();	
 
 	voronoi(700,500);

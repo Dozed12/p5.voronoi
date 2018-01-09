@@ -60,9 +60,12 @@ const VOR_CELLDRAW_SITE = 3;
 	Add custom site
 	//TODO Possibility to add color
 	*/
-	p5.prototype.voronoiSite = function(nx, ny){
+	p5.prototype.voronoiSite = function(nx, ny, nColor){
 		sites.push({x:nx, y:ny});
-		cellColors.push(color(random(0,255),random(0,255),random(0,255)));
+		if(nColor !== undefined)
+			cellColors.push(nColor);
+		else
+			cellColors.push(color(random(0,255),random(0,255),random(0,255)));
 	}
 
 	/*
