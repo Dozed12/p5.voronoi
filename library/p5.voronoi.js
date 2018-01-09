@@ -194,8 +194,8 @@ const VOR_CELLDRAW_SITE = 3;
 
 		var neighbors = [];
 		for (var i = 0; i < voronoiDiagram.cells[id].halfedges.length; i++) {
-			if(voronoiDiagram.cells[id].halfedges[i].rSite !== null)
-				neighbors.push(voronoiDiagram.cells[id].halfedges[i].rSite);
+			if(voronoiDiagram.cells[id].halfedges[i].edge.rSite !== null)
+				neighbors.push(voronoiDiagram.cells[id].halfedges[i].edge.rSite.voronoiId);
 		}
 		return neighbors;
 	}
