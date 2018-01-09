@@ -14,19 +14,27 @@ function setup() {
 		voronoiSite(i*10, 20);
 	}
 
-	//voronoiClearSites();
+	//voronoiClearSites();	
 
 	voronoi(700,500);
 
+	mouseMoved();
+
+}
+
+function mouseMoved(){
+
+	background(100);	
+
 	voronoiDraw(0, 0);
 
-	console.log(voronoiGetSite(20,20));
+	var cell = voronoiGetSite(mouseX,mouseY);
 
-	voronoiDrawCell(800,10,30,VOR_CELLDRAW_BOUNDED);
+	voronoiDrawCell(800,10,cell,VOR_CELLDRAW_BOUNDED);
 
-	voronoiDrawCell(800,300,30,VOR_CELLDRAW_SITE);
+	voronoiDrawCell(800,300,cell,VOR_CELLDRAW_SITE);
 
-	voronoiDrawCell(800,500,30,VOR_CELLDRAW_CENTER);
+	voronoiDrawCell(800,500,cell,VOR_CELLDRAW_CENTER);
 
 	//Vertical Line
 	line(800,10,800,800);

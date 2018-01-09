@@ -193,6 +193,10 @@ const VOR_CELLDRAW_SITE = 3;
 
 	//TODO Draw a voronoi Cell
 	p5.prototype.voronoiDrawCell = function(x, y, id, type){
+
+		if(id >= voronoiDiagram.cells.length || id === undefined)
+			return;
+
 		var halfedges = voronoiDiagram.cells[id].halfedges;
 		var siteX = voronoiDiagram.cells[id].site.x;
 		var siteY = voronoiDiagram.cells[id].site.y;
