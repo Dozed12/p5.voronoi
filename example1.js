@@ -18,17 +18,17 @@ function setup() {
 
 	voronoi(700,500);
 
-	mouseMoved();
-
 }
 
-function mouseMoved(){
+function draw(){
 
 	background(100);	
 
 	voronoiDraw(0, 0);
 
 	var cell = voronoiGetSite(mouseX,mouseY);
+
+	console.log(voronoiNeighbors(cell));
 
 	voronoiDrawCell(800,10,cell,VOR_CELLDRAW_BOUNDED);
 
@@ -44,5 +44,4 @@ function mouseMoved(){
 	line(800,300,1000,300);
 	//Horizontal Line 3
 	line(800,500,1000,500);
-
 }

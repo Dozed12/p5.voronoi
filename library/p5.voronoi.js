@@ -189,9 +189,18 @@ const VOR_CELLDRAW_SITE = 3;
 	//TODO Get voronoi cell neighbors
 	p5.prototype.voronoiNeighbors = function(id){
 
+		if(id >= voronoiDiagram.cells.length || id === undefined)
+			return;
+
+		var neighbors = [];
+		for (var i = 0; i < voronoiDiagram.cells[id].halfedges.length; i++) {
+			if(voronoiDiagram.cells[id].halfedges[i].rSite !== null)
+				neighbors.push(voronoiDiagram.cells[id].halfedges[i].rSite);
+		}
+		return neighbors;
 	}
 
-	//TODO Draw a voronoi Cell
+	//Draw a voronoi Cell
 	p5.prototype.voronoiDrawCell = function(x, y, id, type){
 
 		if(id >= voronoiDiagram.cells.length || id === undefined)
