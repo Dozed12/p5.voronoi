@@ -80,6 +80,7 @@ const VOR_CELLDRAW_SITE = 3;
 
 	//Remove all custom sites
 	p5.prototype.voronoiClearSites = function(){
+		cellColors = [];
 		sites = [];
 	}
 

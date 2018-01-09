@@ -10,11 +10,11 @@ function setup() {
 
 	voronoiRemoveSite(5, 5);
 
-	//voronoiClear();
-
 	for (var i = 0; i < 20; i++) {
 		voronoiSite(i*10, 20);
 	}
+
+	//voronoiClearSites();
 
 	voronoi(700,500);
 
