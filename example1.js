@@ -20,10 +20,11 @@ function setup() {
 
 	voronoi(700,500);
 
+	mousePressed();
+
 }
 
-function draw(){
-
+function mousePressed(){
 	background(100);	
 
 	voronoiDraw(0, 0);
