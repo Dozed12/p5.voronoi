@@ -20,24 +20,26 @@ function setup() {
 
 	voronoi(700,500);
 
+	console.log(voronoiDiagram);
+
 	mousePressed();
 
 }
 
 function mousePressed(){
-	background(100);	
+	background(150);	
 
 	voronoiDraw(0, 0);
 
-	var cell = voronoiGetSite(mouseX,mouseY);
+	var cellId = voronoiGetSite(mouseX,mouseY);
 
-	console.log(voronoiNeighbors(cell));
+	console.log(cellId + ": " + voronoiNeighbors(cellId));
 
-	voronoiDrawCell(800,10,cell,VOR_CELLDRAW_BOUNDED);
+	voronoiDrawCell(800,10,cellId,VOR_CELLDRAW_BOUNDED);
 
-	voronoiDrawCell(800,300,cell,VOR_CELLDRAW_SITE);
+	voronoiDrawCell(800,300,cellId,VOR_CELLDRAW_SITE);
 
-	voronoiDrawCell(800,500,cell,VOR_CELLDRAW_CENTER);
+	voronoiDrawCell(800,500,cellId,VOR_CELLDRAW_CENTER);
 
 	//Vertical Line
 	line(800,10,800,800);

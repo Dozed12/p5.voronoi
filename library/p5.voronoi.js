@@ -1,6 +1,24 @@
 
 //https://github.com/gorhill/Javascript-Voronoi
 
+/*
+TODO
+
+Draw stuff in separate canvas to preserve user colors
+https://stackoverflow.com/questions/48178383/p5-js-get-current-fill-stroke-color
+
+Method to get correspondence between order of site added and true VoronoiID after computing
+
+Colors for sites
+
+Colors for cell edges
+
+NOTES
+
+voronoiGetSite is relative to the top left of the diagram
+
+*/
+
 var voronoiDiagram;
 
 const VOR_CELLDRAW_BOUNDED = 1;
@@ -52,7 +70,7 @@ const VOR_CELLDRAW_SITE = 3;
 	p5.prototype.voronoiSites = function(newSites){
 		for (var i = 0; i < newSites.length; i++) {
 			sites.push({x:newSites[i][0],y:newSites[i][1]});
-			cellColors.push(color(random(0,255),random(0,255),random(0,255)));
+			cellColors.push([newSites[i][0],newSites[i][1],color(random(0,255),random(0,255),random(0,255))]);
 		}
 	}
 
@@ -63,9 +81,9 @@ const VOR_CELLDRAW_SITE = 3;
 	p5.prototype.voronoiSite = function(nx, ny, nColor){
 		sites.push({x:nx, y:ny});
 		if(nColor !== undefined)
-			cellColors.push(nColor);
+			cellColors.push([nx,ny,nColor]);
 		else
-			cellColors.push(color(random(0,255),random(0,255),random(0,255)));
+			cellColors.push([nx,ny,color(random(0,255),random(0,255),random(0,255))]);
 	}
 
 	/*
@@ -130,7 +148,7 @@ const VOR_CELLDRAW_SITE = 3;
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
 
 			//Load Color
-			fill(cellColors[i]);
+			setFillColorCell(i);
 
 			//Shape
 			beginShape();
@@ -162,9 +180,6 @@ const VOR_CELLDRAW_SITE = 3;
 	function setRandoms(width, height){
 		for (var i = 0; i < nRandoms; i++) {
 
-			//Load Color
-			cellColors.push(color(random(0,255),random(0,255),random(0,255)));
-
 			var flag;
 			var nX = round(random(0,width));
 			var nY = round(random(0,height));
@@ -183,6 +198,10 @@ const VOR_CELLDRAW_SITE = 3;
 				}while(flag == true && tries <= triesLimit)
 			}
 			sites.push({x:nX, y:nY});
+
+			//Set Color
+			cellColors.push([nX,nY,color(random(0,255),random(0,255),random(0,255))]);
+
 			//Warn about maximum tries reached
 			if (tries >= triesLimit)
 				console.log("Warning: setRandoms tries limit reached: minimum distance(" + randomMinimumDist + ") might be too big for size/number of sites");
@@ -213,7 +232,8 @@ const VOR_CELLDRAW_SITE = 3;
 		var siteX = voronoiDiagram.cells[id].site.x;
 		var siteY = voronoiDiagram.cells[id].site.y;
 
-		fill(cellColors[id]);
+		//Load Color
+		setFillColorCell(id);
 
 		if (type == VOR_CELLDRAW_BOUNDED) {
 			drawCellBounded(x, y, halfedges, siteX, siteY);
@@ -322,6 +342,16 @@ const VOR_CELLDRAW_SITE = 3;
 	//Eucledian Distance
 	function dist2D(ix, iy, fx, fy){
 		return (sqrt(sq(ix - fx)+sq(iy - fy)))
+	}
+
+	//Set fill color from cell
+	function setFillColorCell(cellId){
+		for (var c = 0; c < cellColors.length; c++) {
+			if(cellColors[c][0] == voronoiDiagram.cells[cellId].site.x && cellColors[c][1] == voronoiDiagram.cells[cellId].site.y){
+				fill(cellColors[c][2]);
+				return;
+			}
+		}
 	}
 
 })();
