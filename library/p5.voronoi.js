@@ -7,6 +7,8 @@ TODO
 Draw stuff in separate canvas to preserve user colors
 https://stackoverflow.com/questions/48178383/p5-js-get-current-fill-stroke-color
 
+Some colors are being duplicate for some reason
+
 Method to get correspondence between order of site added and true VoronoiID after computing
 
 Colors for sites
@@ -157,13 +159,16 @@ const VOR_CELLDRAW_SITE = 3;
 				vertex(x + halfEdge.getStartpoint().x,y + halfEdge.getStartpoint().y);
 			}
 			endShape(CLOSE);
-		}
 
-		//Render Sites
-		strokeWeight(siteStrokeWeight);
-		stroke(siteStroke);
-		for (var i = 0; i < sites.length; i++) {
-			point(x + sites[i].x,y + sites[i].y);
+			//Render Site
+			strokeWeight(siteStrokeWeight);
+			stroke(siteStroke);
+			let sX = x + voronoiDiagram.cells[i].site.x;
+			let sY = y + voronoiDiagram.cells[i].site.y;
+			point(sX,sY);
+			fill(0);
+			strokeWeight(1);
+			text(voronoiDiagram.cells[i].site.voronoiId,sX+5,sY+10);
 		}
 
 	}
@@ -204,22 +209,46 @@ const VOR_CELLDRAW_SITE = 3;
 
 			//Warn about maximum tries reached
 			if (tries >= triesLimit)
-				console.log("Warning: setRandoms tries limit reached: minimum distance(" + randomMinimumDist + ") might be too big for size/number of sites");
+				console.log("Warning: setRandoms tries limit reached: minimum distance(" + randomMinimumDist + ") not ensured");
 		}
 	}
 
-	//TODO Get voronoi cell neighbors
+	//Get voronoi cell neighbors
 	p5.prototype.voronoiNeighbors = function(id){
 
 		if(id >= voronoiDiagram.cells.length || id === undefined)
 			return;
 
-		var neighbors = [];
+		//All neighbors
+		var allNeighbors = [];
 		for (var i = 0; i < voronoiDiagram.cells[id].halfedges.length; i++) {
 			if(voronoiDiagram.cells[id].halfedges[i].edge.rSite !== null)
-				neighbors.push(voronoiDiagram.cells[id].halfedges[i].edge.rSite.voronoiId);
+				allNeighbors.push(voronoiDiagram.cells[id].halfedges[i].edge.rSite.voronoiId);
+			allNeighbors.push(voronoiDiagram.cells[id].halfedges[i].edge.lSite.voronoiId);
 		}
-		return neighbors;
+
+		//Remove duplicates
+		var uniqueNeighbors = removeDuplicates(allNeighbors);
+
+		//Remove itself
+		for (var i = 0; i < uniqueNeighbors.length; i++) {
+			if(uniqueNeighbors[i] == id){
+				uniqueNeighbors.splice(i,1);
+				break;
+			}
+		}
+
+		return uniqueNeighbors;
+	}
+
+	function removeDuplicates(arr){
+	    let unique_array = []
+	    for(let i = 0;i < arr.length; i++){
+	        if(unique_array.indexOf(arr[i]) == -1){
+	            unique_array.push(arr[i])
+	        }
+	    }
+	    return unique_array;
 	}
 
 	//Draw a voronoi Cell
