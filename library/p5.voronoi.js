@@ -165,6 +165,7 @@ const VOR_CELLDRAW_SITE = 3;
 			stroke(siteStroke);
 			let sX = x + voronoiDiagram.cells[i].site.x;
 			let sY = y + voronoiDiagram.cells[i].site.y;
+			point(sX,sY);
 		}
 
 	}
