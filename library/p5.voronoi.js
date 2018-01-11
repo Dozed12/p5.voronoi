@@ -26,6 +26,11 @@ const VOR_CELLDRAW_BOUNDED = 1;
 const VOR_CELLDRAW_CENTER = 2;
 const VOR_CELLDRAW_SITE = 3;
 
+var cellStrokeWeight = 1;
+var cellStroke = 0;
+var siteStrokeWeight = 3;
+var siteStroke = 0;
+
 (function() {
 
 	var imgWidth;
@@ -38,12 +43,7 @@ const VOR_CELLDRAW_SITE = 3;
 
 	var voronoiObj = new Voronoi();
 
-	var cellColors = [];
-
-	var cellStrokeWeight = 1;
-	var cellStroke = 0;
-	var siteStrokeWeight = 3;
-	var siteStroke = 0;
+	var cellColors = [];	
 
 	/*
 	Add Random Sites
