@@ -6,21 +6,19 @@ function setup() {
 
 	voronoiRndSites(30, 50);
 
-	//voronoiSites([[5,5],[10,10],[15,15],[20,20]]);
+	voronoiSites([[5,5],[10,10],[15,15],[20,20]]);
 
-	//voronoiRemoveSite(5, 5);
+	voronoiRemoveSite(5, 5);
 
-	//for (var i = 0; i < 20; i++) {
-	//	voronoiSite(i*10, 20);
-	//}
+	for (var i = 0; i < 20; i++) {
+		voronoiSite(i*10, 20);
+	}
 
 	voronoiSite(200,200,color(255,255,255));
 
 	//voronoiClearSites();	
 
 	voronoi(700,500);
-
-	console.log(voronoiDiagram);
 
 	mousePressed();
 

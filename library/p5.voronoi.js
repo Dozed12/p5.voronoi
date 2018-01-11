@@ -7,9 +7,8 @@ TODO
 Draw stuff in separate canvas to preserve user colors
 https://stackoverflow.com/questions/48178383/p5-js-get-current-fill-stroke-color
 
+(Need to verify)
 Some colors are being duplicate for some reason
-
-Method to get correspondence between order of site added and true VoronoiID after computing
 
 Colors for sites
 
@@ -145,9 +144,10 @@ const VOR_CELLDRAW_SITE = 3;
 	p5.prototype.voronoiDraw = function(x, y){
 
 		//Render Cells
-		strokeWeight(cellStrokeWeight);
-		stroke(cellStroke);
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
+
+			strokeWeight(cellStrokeWeight);
+			stroke(cellStroke);
 
 			//Load Color
 			setFillColorCell(i);
@@ -165,10 +165,6 @@ const VOR_CELLDRAW_SITE = 3;
 			stroke(siteStroke);
 			let sX = x + voronoiDiagram.cells[i].site.x;
 			let sY = y + voronoiDiagram.cells[i].site.y;
-			point(sX,sY);
-			fill(0);
-			strokeWeight(1);
-			text(voronoiDiagram.cells[i].site.voronoiId,sX+5,sY+10);
 		}
 
 	}
