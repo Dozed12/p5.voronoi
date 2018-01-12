@@ -4,9 +4,6 @@
 /*
 TODO
 
-Draw stuff in separate canvas to preserve user colors
-https://stackoverflow.com/questions/48178383/p5-js-get-current-fill-stroke-color
-
 (Need to verify)
 Some colors are being duplicate for some reason
 
@@ -33,6 +30,8 @@ var siteStroke = 0;
 
 (function() {
 
+	var graphics;
+
 	var imgWidth;
 	var imgHeight;
 
@@ -43,7 +42,7 @@ var siteStroke = 0;
 
 	var voronoiObj = new Voronoi();
 
-	var cellColors = [];	
+	var cellColors = [];
 
 	/*
 	Add Random Sites
@@ -143,35 +142,42 @@ var siteStroke = 0;
 	//Render
 	p5.prototype.voronoiDraw = function(x, y){
 
+		graphics = createGraphics(imgWidth, imgHeight);
+
 		//Render Cells
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
 
-			strokeWeight(cellStrokeWeight);
-			stroke(cellStroke);
+			graphics.strokeWeight(cellStrokeWeight);
+			graphics.stroke(cellStroke);
 
 			//Load Color
 			setFillColorCell(i);
 
 			//Shape
-			beginShape();
+			graphics.beginShape();
 			for (var j = 0; j < voronoiDiagram.cells[i].halfedges.length; j++) {
 				var halfEdge = voronoiDiagram.cells[i].halfedges[j];
 				vertex(x + halfEdge.getStartpoint().x,y + halfEdge.getStartpoint().y);
 			}
-			endShape(CLOSE);
+			graphics.endShape(CLOSE);
 
 			//Render Site
-			strokeWeight(siteStrokeWeight);
-			stroke(siteStroke);
+			graphics.strokeWeight(siteStrokeWeight);
+			graphics.stroke(siteStroke);
 			let sX = x + voronoiDiagram.cells[i].site.x;
 			let sY = y + voronoiDiagram.cells[i].site.y;
-			point(sX,sY);
+			graphics.point(sX,sY);
 		}
+
+		image(graphics,x,y);
 
 	}
 
 	//Compute
 	p5.prototype.voronoi = function(width, height){
+		//Set Diagram Size
+		imgWidth = width;
+		imgHeight = height;
 		//Set Random Sites
 		setRandoms(width, height);
 		//Compute
@@ -251,6 +257,8 @@ var siteStroke = 0;
 	//Draw a voronoi Cell
 	p5.prototype.voronoiDrawCell = function(x, y, id, type){
 
+		graphics = createGraphics(imgWidth, imgHeight);
+
 		if(id >= voronoiDiagram.cells.length || id === undefined)
 			return;
 
@@ -275,8 +283,8 @@ var siteStroke = 0;
 	function drawCellBounded(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		strokeWeight(cellStrokeWeight);
-		stroke(cellStroke);
+		graphics.strokeWeight(cellStrokeWeight);
+		graphics.stroke(cellStroke);
 
 		//Find minimums
 		let minX = Number.MAX_VALUE;
@@ -289,16 +297,18 @@ var siteStroke = 0;
 		}
 
 		//Draw
-		beginShape();
+		graphics.beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
-			vertex(halfedges[i].getStartpoint().x - minX + x, halfedges[i].getStartpoint().y - minY + y);
+			vertex(halfedges[i].getStartpoint().x - minX, halfedges[i].getStartpoint().y - minY);
 		}
-		endShape(CLOSE);
+		graphics.endShape(CLOSE);
 
 		//Draw Site
-		strokeWeight(siteStrokeWeight);
-		stroke(siteStroke);
-		point(siteX - minX + x, siteY - minY + y);
+		graphics.strokeWeight(siteStrokeWeight);
+		graphics.stroke(siteStroke);
+		graphics.point(siteX - minX, siteY - minY);
+
+		image(graphics,x,y);
 
 	}
 
@@ -306,8 +316,8 @@ var siteStroke = 0;
 	function drawCellCenter(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		strokeWeight(cellStrokeWeight);
-		stroke(cellStroke);
+		graphics.strokeWeight(cellStrokeWeight);
+		graphics.stroke(cellStroke);
 
 		//Find minimums and maximums
 		let minX = Number.MAX_VALUE;
@@ -329,16 +339,18 @@ var siteStroke = 0;
 		let dY = maxY - minY;
 
 		//Draw
-		beginShape();
+		graphics.beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
-			vertex(halfedges[i].getStartpoint().x - minX + x - dX/2, halfedges[i].getStartpoint().y - minY + y - dY/2);
+			vertex(halfedges[i].getStartpoint().x - minX, halfedges[i].getStartpoint().y - minY);
 		}
-		endShape(CLOSE);
+		graphics.endShape(CLOSE);
 
 		//Draw Site
-		strokeWeight(siteStrokeWeight);
-		stroke(siteStroke);
-		point(siteX - minX + x - dX/2, siteY - minY + y - dY/2);
+		graphics.strokeWeight(siteStrokeWeight);
+		graphics.stroke(siteStroke);
+		graphics.point(siteX - minX, siteY - minY);
+
+		image(graphics,x-dX/2,y-dY/2);
 
 	}
 
@@ -346,22 +358,32 @@ var siteStroke = 0;
 	function drawCellSite(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		strokeWeight(cellStrokeWeight);
-		stroke(cellStroke);
+		graphics.strokeWeight(cellStrokeWeight);
+		graphics.stroke(cellStroke);
+
+		//Find minimums and maximums
+		let minX = Number.MAX_VALUE;
+		let minY = Number.MAX_VALUE;
+		for (var i = 0; i < halfedges.length; i++) {
+			if (halfedges[i].getStartpoint().x < minX)
+				minX = halfedges[i].getStartpoint().x;
+			if (halfedges[i].getStartpoint().y < minY)
+				minY = halfedges[i].getStartpoint().y;
+		}
 
 		//Draw
-		beginShape();
+		graphics.beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
-			let dX = halfedges[i].getStartpoint().x - siteX;
-			let dY = halfedges[i].getStartpoint().y - siteY;
-			vertex(x+dX, y+dY);
+			vertex(halfedges[i].getStartpoint().x - minX, halfedges[i].getStartpoint().y - minY);
 		}
-		endShape(CLOSE);
+		graphics.endShape(CLOSE);
 
 		//Draw Site
-		strokeWeight(siteStrokeWeight);
-		stroke(siteStroke);
-		point(x, y);
+		graphics.strokeWeight(siteStrokeWeight);
+		graphics.stroke(siteStroke);
+		graphics.point(siteX - minX, siteY - minY);
+
+		image(graphics,x-(siteX-minX),y-(siteY-minY));
 
 	}
 
@@ -374,7 +396,7 @@ var siteStroke = 0;
 	function setFillColorCell(cellId){
 		for (var c = 0; c < cellColors.length; c++) {
 			if(cellColors[c][0] == voronoiDiagram.cells[cellId].site.x && cellColors[c][1] == voronoiDiagram.cells[cellId].site.y){
-				fill(cellColors[c][2]);
+				graphics.fill(cellColors[c][2]);
 				return;
 			}
 		}
