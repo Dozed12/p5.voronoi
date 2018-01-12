@@ -143,6 +143,7 @@ var siteStroke = 0;
 	p5.prototype.voronoiDraw = function(x, y){
 
 		graphics = createGraphics(imgWidth, imgHeight);
+		graphics.noSmooth();
 
 		//Render Cells
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
@@ -258,6 +259,7 @@ var siteStroke = 0;
 	p5.prototype.voronoiDrawCell = function(x, y, id, type){
 
 		graphics = createGraphics(imgWidth, imgHeight);
+		graphics.noSmooth();
 
 		if(id >= voronoiDiagram.cells.length || id === undefined)
 			return;

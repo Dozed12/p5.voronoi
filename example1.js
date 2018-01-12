@@ -3,6 +3,8 @@ function setup() {
 
 	createCanvas(windowWidth, windowHeight);
 
+	noSmooth();
+
 	//Add 30 random sites with 50 minimum distance to be
 	//added upon computing
 	voronoiRndSites(30, 50);
