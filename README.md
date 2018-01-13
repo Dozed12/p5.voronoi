@@ -20,12 +20,6 @@ It currently has the following features:
 
 You can visit [https://dozed12.github.io/p5.voronoi/](https://dozed12.github.io/p5.voronoi/) for a live example of these features with a detailed explaination in the [example1.js](https://github.com/Dozed12/p5.voronoi/blob/master/example1.js) file.
 
-Future Plans:
-
-- More customization to cell borders/color
-- Draw custom labels for sites (or at least provide helper functions for this purpose)
-- Customize random cell colors in some way
-
 ### Note
 
 Although my goal is to make using voronoi diagrams as accessible as possible and follow p5.js goal, there is always space for different usage that I won't foresee, therefore you can still access the voronoiDiagram variable which is the result of computing the diagram with [gorhill](https://github.com/gorhill/Javascript-Voronoi) implementation. For this effect I recommend you check his source code for details on how to use his implementation. Take the opportunity to show some love for his work :)
