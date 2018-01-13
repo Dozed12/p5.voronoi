@@ -7,6 +7,8 @@ TODO
 (Need to verify)
 Some colors are being duplicate for some reason
 
+Better stroke/fill global names
+
 Colors for sites
 
 Colors for cell edges
@@ -23,11 +25,6 @@ const VOR_CELLDRAW_BOUNDED = 1;
 const VOR_CELLDRAW_CENTER = 2;
 const VOR_CELLDRAW_SITE = 3;
 
-var cellStrokeWeight = 1;
-var cellStroke = 0;
-var siteStrokeWeight = 3;
-var siteStroke = 0;
-
 (function() {
 
 	var graphics;
@@ -43,6 +40,27 @@ var siteStroke = 0;
 	var voronoiObj = new Voronoi();
 
 	var cellColors = [];
+
+	var VOR_CELLSTROKE_WEIGHT = 1;
+	var VOR_CELLSTROKE = 0;
+	var VOR_SITESTROKE_WEIGHT = 3;
+	var VOR_SITESTROKE = 0;
+
+	/*
+	Stroke Setting Functions
+	*/
+	p5.prototype.voronoiCellStrokeWeight = function(v){
+		VOR_CELLSTROKE_WEIGHT = v;	
+	}
+	p5.prototype.voronoiCellStroke = function(v){
+		VOR_CELLSTROKE = v;	
+	}
+	p5.prototype.voronoiSiteStrokeWeight = function(v){
+		VOR_SITESTROKE_WEIGHT = v;	
+	}
+	p5.prototype.voronoiSiteStroke = function(v){
+		VOR_SITESTROKE = v;	
+	}
 
 	/*
 	Add Random Sites
@@ -76,7 +94,6 @@ var siteStroke = 0;
 
 	/*
 	Add custom site
-	//TODO Possibility to add color
 	*/
 	p5.prototype.voronoiSite = function(nx, ny, nColor){
 		sites.push({x:nx, y:ny});
@@ -148,8 +165,8 @@ var siteStroke = 0;
 		//Render Cells
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
 
-			graphics.strokeWeight(cellStrokeWeight);
-			graphics.stroke(cellStroke);
+			graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
+			graphics.stroke(VOR_CELLSTROKE);
 
 			//Load Color
 			setFillColorCell(i);
@@ -163,8 +180,8 @@ var siteStroke = 0;
 			graphics.endShape(CLOSE);
 
 			//Render Site
-			graphics.strokeWeight(siteStrokeWeight);
-			graphics.stroke(siteStroke);
+			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+			graphics.stroke(VOR_SITESTROKE);
 			let sX = x + voronoiDiagram.cells[i].site.x;
 			let sY = y + voronoiDiagram.cells[i].site.y;
 			graphics.point(sX,sY);
@@ -285,8 +302,8 @@ var siteStroke = 0;
 	function drawCellBounded(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		graphics.strokeWeight(cellStrokeWeight);
-		graphics.stroke(cellStroke);
+		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
+		graphics.stroke(VOR_CELLSTROKE);
 
 		//Find minimums
 		let minX = Number.MAX_VALUE;
@@ -306,8 +323,8 @@ var siteStroke = 0;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		graphics.strokeWeight(siteStrokeWeight);
-		graphics.stroke(siteStroke);
+		graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+		graphics.stroke(VOR_SITESTROKE);
 		graphics.point(siteX - minX, siteY - minY);
 
 		image(graphics,x,y);
@@ -318,8 +335,8 @@ var siteStroke = 0;
 	function drawCellCenter(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		graphics.strokeWeight(cellStrokeWeight);
-		graphics.stroke(cellStroke);
+		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
+		graphics.stroke(VOR_CELLSTROKE);
 
 		//Find minimums and maximums
 		let minX = Number.MAX_VALUE;
@@ -348,8 +365,8 @@ var siteStroke = 0;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		graphics.strokeWeight(siteStrokeWeight);
-		graphics.stroke(siteStroke);
+		graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+		graphics.stroke(VOR_SITESTROKE);
 		graphics.point(siteX - minX, siteY - minY);
 
 		image(graphics,x-dX/2,y-dY/2);
@@ -360,8 +377,8 @@ var siteStroke = 0;
 	function drawCellSite(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		graphics.strokeWeight(cellStrokeWeight);
-		graphics.stroke(cellStroke);
+		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
+		graphics.stroke(VOR_CELLSTROKE);
 
 		//Find minimums and maximums
 		let minX = Number.MAX_VALUE;
@@ -381,8 +398,8 @@ var siteStroke = 0;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		graphics.strokeWeight(siteStrokeWeight);
-		graphics.stroke(siteStroke);
+		graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+		graphics.stroke(VOR_SITESTROKE);
 		graphics.point(siteX - minX, siteY - minY);
 
 		image(graphics,x-(siteX-minX),y-(siteY-minY));
