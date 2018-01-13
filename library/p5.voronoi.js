@@ -22,6 +22,7 @@ const VOR_CELLDRAW_SITE = 3;
 
 	var sites = [];
 
+	var notFirst = false;
 	var nRandoms;
 	var randomMinimumDist = 0;
 
@@ -182,7 +183,8 @@ const VOR_CELLDRAW_SITE = 3;
 	//Compute
 	p5.prototype.voronoi = function(width, height){
 		//Remove Old Randoms
-		sites.splice(sites.length-nRandoms,nRandoms);
+		if(notFirst)
+			sites.splice(sites.length-nRandoms,nRandoms);
 		//Set Diagram Size
 		imgWidth = width;
 		imgHeight = height;
@@ -190,6 +192,8 @@ const VOR_CELLDRAW_SITE = 3;
 		setRandoms(width, height);
 		//Compute
 		voronoiDiagram = voronoiObj.compute(sites,{xl:0, xr:width, yt:0, yb:height});
+		//First instance;
+		notFirst = true;
 	}
 
 	//Add Random Sites
