@@ -1,21 +1,9 @@
 
-//https://github.com/gorhill/Javascript-Voronoi
-
 /*
-TODO
 
-(Need to verify)
-Some colors are being duplicate for some reason
+Gorhill implementation
 
-Better stroke/fill global names
-
-Colors for sites
-
-Colors for cell edges
-
-NOTES
-
-voronoiGetSite is relative to the top left of the diagram
+https://github.com/gorhill/Javascript-Voronoi
 
 */
 
