@@ -181,6 +181,8 @@ const VOR_CELLDRAW_SITE = 3;
 
 	//Compute
 	p5.prototype.voronoi = function(width, height){
+		//Remove Old Randoms
+		sites.splice(sites.length-nRandoms,nRandoms);
 		//Set Diagram Size
 		imgWidth = width;
 		imgHeight = height;
