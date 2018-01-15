@@ -117,36 +117,20 @@ var VOR_SITESTROKE = 0;
 
 	//Get Cell id in position
 	p5.prototype.voronoiGetSite = function(x, y){
+
+		var finalID;
+		var min = Number.MAX_VALUE;
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
-			//Prepare poly
-			var polyVertexes = [];
-			for (var j = 0; j < voronoiDiagram.cells[i].halfedges.length; j++) {
-				var halfEdge = voronoiDiagram.cells[i].halfedges[j];
-				var point = [halfEdge.getStartpoint().x, halfEdge.getStartpoint().y];
-				polyVertexes.push(point);
+			let site = voronoiDiagram.cells[i].site;
+			let dist = dist2D(x,y,site.x,site.y);
+			if(dist < min){
+				min = dist;
+				finalID = i;
 			}
-			//Check if inside
-			if(insidePoly([x,y],polyVertexes))
-				return voronoiDiagram.cells[i].site.voronoiId;
 		}
-	}
 
-	//Check if point is inside polygon
-	function insidePoly(point, poly){
+		return finalID;
 
-		var x = point[0], y = point[1];
-		
-		var inside = false;
-		for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-			var xi = poly[i][0], yi = poly[i][1];
-			var xj = poly[j][0], yj = poly[j][1];
-			
-			var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-			if (intersect)
-				inside = !inside;
-		}
-		
-		return inside;
 	}
 
 	//Draw Diagram
