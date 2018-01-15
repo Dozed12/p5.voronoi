@@ -152,7 +152,7 @@ const VOR_CELLDRAW_SITE = 3;
 	//Render
 	p5.prototype.voronoiDraw = function(x, y){
 
-		graphics = createGraphics(imgWidth, imgHeight);
+		graphics.resizeCanvas(imgWidth,imgHeight,true);
 		graphics.noSmooth();
 
 		//Render Cells
@@ -186,6 +186,9 @@ const VOR_CELLDRAW_SITE = 3;
 
 	//Compute
 	p5.prototype.voronoi = function(width, height){
+		//Create Buffer
+		if(!notFirst)
+			graphics = createGraphics(width, height);
 		//Remove Old Randoms
 		if(notFirst)
 			sites.splice(sites.length-nRandoms,nRandoms);
@@ -273,7 +276,7 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw a voronoi Cell
 	p5.prototype.voronoiDrawCell = function(x, y, id, type){
 
-		graphics = createGraphics(imgWidth, imgHeight);
+		graphics.resizeCanvas(imgWidth,imgHeight,true);
 		graphics.noSmooth();
 
 		if(id >= voronoiDiagram.cells.length || id === undefined)
