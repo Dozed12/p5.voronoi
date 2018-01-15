@@ -1,7 +1,7 @@
 
 function setup() {
 
-	createCanvas(windowWidth, windowHeight);
+	createCanvas(windowWidth, 1000);
 
 	noSmooth();
 
@@ -38,6 +38,12 @@ function mousePressed(){
 
 	//Draw diagram in coordinates 0, 0
 	voronoiDraw(0, 0);
+
+	//Example rect to show frame transparency
+	rect(100,600,200,200);
+
+	//Draw diagram frame in coordinates 0, 500
+	voronoiDrawFrame(0, 500);
 
 	//Get id of voronoi cell that contains the
 	//coordinates mouseX, mouseY

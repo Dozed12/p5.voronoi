@@ -13,6 +13,11 @@ const VOR_CELLDRAW_BOUNDED = 1;
 const VOR_CELLDRAW_CENTER = 2;
 const VOR_CELLDRAW_SITE = 3;
 
+var VOR_CELLSTROKE_WEIGHT = 1;
+var VOR_CELLSTROKE = 0;
+var VOR_SITESTROKE_WEIGHT = 3;
+var VOR_SITESTROKE = 0;
+
 (function() {
 
 	var graphics;
@@ -29,11 +34,6 @@ const VOR_CELLDRAW_SITE = 3;
 	var voronoiObj = new Voronoi();
 
 	var cellColors = [];
-
-	var VOR_CELLSTROKE_WEIGHT = 1;
-	var VOR_CELLSTROKE = 0;
-	var VOR_SITESTROKE_WEIGHT = 3;
-	var VOR_SITESTROKE = 0;
 
 	/*
 	Stroke Setting Functions
@@ -149,7 +149,7 @@ const VOR_CELLDRAW_SITE = 3;
 		return inside;
 	}
 
-	//Render
+	//Draw Diagram
 	p5.prototype.voronoiDraw = function(x, y){
 
 		//Reset Graphics
@@ -237,6 +237,11 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 	}
 
+	//Eucledian Distance
+	function dist2D(ix, iy, fx, fy){
+		return (sqrt(sq(ix - fx)+sq(iy - fy)))
+	}
+
 	//Get voronoi cell neighbors
 	p5.prototype.voronoiNeighbors = function(id){
 
@@ -278,6 +283,7 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw a voronoi Cell
 	p5.prototype.voronoiDrawCell = function(x, y, id, type){
 
+		//Reset Graphics
 		graphics.resizeCanvas(imgWidth,imgHeight,true);
 		graphics.noSmooth();
 
@@ -304,7 +310,6 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Cell Bounded
 	function drawCellBounded(x, y, halfedges, siteX, siteY){
 
-		//Reset Graphics
 		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
 
 		//Find minimums
@@ -408,9 +413,24 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
-	//Eucledian Distance
-	function dist2D(ix, iy, fx, fy){
-		return (sqrt(sq(ix - fx)+sq(iy - fy)))
+	//Draw Diagram Frame
+	p5.prototype.voronoiDrawFrame = function(x, y){
+
+		//Reset Graphics
+		graphics.resizeCanvas(imgWidth,imgHeight,true);
+		graphics.noSmooth();
+
+		//Stroke Settings
+		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
+		graphics.stroke(VOR_CELLSTROKE);
+
+		//Render Frame
+		var edges = voronoiDiagram.edges;
+		for (var i = 0; i < edges.length; i++) {
+			graphics.line(edges[i].va.x, edges[i].va.y, edges[i].vb.x, edges[i].vb.y);
+		}
+
+		image(graphics,x,y);
 	}
 
 	//Set fill color from cell
