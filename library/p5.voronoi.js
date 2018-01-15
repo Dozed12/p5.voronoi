@@ -39,16 +39,20 @@ const VOR_CELLDRAW_SITE = 3;
 	Stroke Setting Functions
 	*/
 	p5.prototype.voronoiCellStrokeWeight = function(v){
-		VOR_CELLSTROKE_WEIGHT = v;	
+		if(v > 0)
+			VOR_CELLSTROKE_WEIGHT = v;	
 	}
 	p5.prototype.voronoiCellStroke = function(v){
-		VOR_CELLSTROKE = v;	
+		if(v > 0)
+			VOR_CELLSTROKE = v;	
 	}
 	p5.prototype.voronoiSiteStrokeWeight = function(v){
-		VOR_SITESTROKE_WEIGHT = v;	
+		if(v > 0)
+			VOR_SITESTROKE_WEIGHT = v;	
 	}
 	p5.prototype.voronoiSiteStroke = function(v){
-		VOR_SITESTROKE = v;	
+		if(v > 0)
+			VOR_SITESTROKE = v;	
 	}
 
 	/*
