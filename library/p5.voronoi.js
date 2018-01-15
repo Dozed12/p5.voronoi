@@ -152,8 +152,8 @@ const VOR_CELLDRAW_SITE = 3;
 	//Render
 	p5.prototype.voronoiDraw = function(x, y){
 
+		//Reset Graphics
 		graphics.resizeCanvas(imgWidth,imgHeight,true);
-		graphics.noSmooth();
 
 		//Render Cells
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
@@ -187,8 +187,10 @@ const VOR_CELLDRAW_SITE = 3;
 	//Compute
 	p5.prototype.voronoi = function(width, height){
 		//Create Buffer
-		if(!notFirst)
+		if(!notFirst){
 			graphics = createGraphics(width, height);
+			graphics.noSmooth();
+		}
 		//Remove Old Randoms
 		if(notFirst)
 			sites.splice(sites.length-nRandoms,nRandoms);
@@ -302,9 +304,8 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Cell Bounded
 	function drawCellBounded(x, y, halfedges, siteX, siteY){
 
-		//Stroke Settings
+		//Reset Graphics
 		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
-		graphics.stroke(VOR_CELLSTROKE);
 
 		//Find minimums
 		let minX = Number.MAX_VALUE;
