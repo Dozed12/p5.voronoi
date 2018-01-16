@@ -164,6 +164,7 @@ var VOR_SITESTROKE = 0;
 			graphics.point(sX,sY);
 		}
 
+		//Draw to screen
 		image(graphics,x,y);
 
 	}
@@ -265,7 +266,7 @@ var VOR_SITESTROKE = 0;
 	}
 
 	//Draw a voronoi Cell
-	p5.prototype.voronoiDrawCell = function(x, y, id, type){
+	p5.prototype.voronoiDrawCell = function(x, y, id, type, fill = true){
 
 		//Reset Graphics
 		graphics.resizeCanvas(imgWidth,imgHeight,true);
@@ -282,17 +283,17 @@ var VOR_SITESTROKE = 0;
 		setFillColorCell(id);
 
 		if (type == VOR_CELLDRAW_BOUNDED) {
-			drawCellBounded(x, y, halfedges, siteX, siteY);
+			drawCellBounded(x, y, halfedges, siteX, siteY, fill);
 		}else if(type == VOR_CELLDRAW_CENTER){
-			drawCellCenter(x, y, halfedges, siteX, siteY);
+			drawCellCenter(x, y, halfedges, siteX, siteY, fill);
 		}else if(type == VOR_CELLDRAW_SITE){
-			drawCellSite(x, y, halfedges, siteX, siteY);
+			drawCellSite(x, y, halfedges, siteX, siteY, fill);
 		}
 
 	}
 
 	//Draw Cell Bounded
-	function drawCellBounded(x, y, halfedges, siteX, siteY){
+	function drawCellBounded(x, y, halfedges, siteX, siteY, fill){
 
 		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
 
@@ -306,6 +307,10 @@ var VOR_SITESTROKE = 0;
 				minY = halfedges[i].getStartpoint().y;
 		}
 
+		//Check fill flag
+		if(!fill)
+			graphics.noFill();
+
 		//Draw
 		graphics.beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
@@ -318,12 +323,13 @@ var VOR_SITESTROKE = 0;
 		graphics.stroke(VOR_SITESTROKE);
 		graphics.point(siteX - minX, siteY - minY);
 
+		//Draw to screen
 		image(graphics,x,y);
 
 	}
 
 	//Draw Cell Centered
-	function drawCellCenter(x, y, halfedges, siteX, siteY){
+	function drawCellCenter(x, y, halfedges, siteX, siteY, fill){
 
 		//Stroke Settings
 		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
@@ -348,6 +354,10 @@ var VOR_SITESTROKE = 0;
 		let dX = maxX - minX;
 		let dY = maxY - minY;
 
+		//Check fill flag
+		if(!fill)
+			graphics.noFill();
+
 		//Draw
 		graphics.beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
@@ -360,12 +370,13 @@ var VOR_SITESTROKE = 0;
 		graphics.stroke(VOR_SITESTROKE);
 		graphics.point(siteX - minX, siteY - minY);
 
+		//Draw to screen
 		image(graphics,x-dX/2,y-dY/2);
 
 	}
 
 	//Draw Cell Site
-	function drawCellSite(x, y, halfedges, siteX, siteY){
+	function drawCellSite(x, y, halfedges, siteX, siteY, fill){
 
 		//Stroke Settings
 		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
@@ -381,6 +392,10 @@ var VOR_SITESTROKE = 0;
 				minY = halfedges[i].getStartpoint().y;
 		}
 
+		//Check fill flag
+		if(!fill)
+			graphics.noFill();
+
 		//Draw
 		graphics.beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
@@ -393,6 +408,7 @@ var VOR_SITESTROKE = 0;
 		graphics.stroke(VOR_SITESTROKE);
 		graphics.point(siteX - minX, siteY - minY);
 
+		//Draw to screen
 		image(graphics,x-(siteX-minX),y-(siteY-minY));
 
 	}
@@ -414,6 +430,7 @@ var VOR_SITESTROKE = 0;
 			graphics.line(edges[i].va.x, edges[i].va.y, edges[i].vb.x, edges[i].vb.y);
 		}
 
+		//Draw to screen
 		image(graphics,x,y);
 	}
 

@@ -39,7 +39,7 @@ function mousePressed(){
 	//Draw diagram in coordinates 0, 0
 	voronoiDraw(0, 0);
 
-	//Example rect to show frame transparency
+	//Example rect to demonstrate frame transparency
 	rect(100,600,200,200);
 
 	//Draw diagram frame in coordinates 0, 500
@@ -61,21 +61,29 @@ function mousePressed(){
 
 	//Draw cell from top left
 	voronoiDrawCell(800,10,cellId,VOR_CELLDRAW_BOUNDED);
+	//Draw cell frame from top left
+	voronoiDrawCell(1000,10,cellId,VOR_CELLDRAW_BOUNDED, false);
 
 	//Draw cell from site
 	voronoiDrawCell(800,300,cellId,VOR_CELLDRAW_SITE);
+	//Draw cell frame from site
+	voronoiDrawCell(1000,300,cellId,VOR_CELLDRAW_SITE, false);
 
 	//Draw cell from geometric center
-	voronoiDrawCell(800,500,cellId,VOR_CELLDRAW_CENTER);
+	voronoiDrawCell(800,610,cellId,VOR_CELLDRAW_CENTER);
+	//Draw cell frame from geometric center
+	voronoiDrawCell(1000,610,cellId,VOR_CELLDRAW_CENTER, false);	
 
 	//Guide lines to compare different draw modes
 
-	//Vertical Line
+	//Vertical Line 1
 	line(800,10,800,800);
+	//Vertical Line 2
+	line(1000,10,1000,800);
 	//Horizontal Line 1
-	line(800,10,1000,10);
+	line(800,10,1200,10);
 	//Horizontal Line 2
-	line(800,300,1000,300);
+	line(800,300,1200,300);
 	//Horizontal Line 3
-	line(800,500,1000,500);
+	line(800,610,1200,610);
 }
