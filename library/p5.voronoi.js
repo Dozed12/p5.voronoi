@@ -282,18 +282,22 @@ var VOR_SITESTROKE = 0;
 		//Load Color
 		setFillColorCell(id);
 
+		//Check fill flag
+		if(!fill)
+			graphics.noFill();
+
 		if (type == VOR_CELLDRAW_BOUNDED) {
-			drawCellBounded(x, y, halfedges, siteX, siteY, fill);
+			drawCellBounded(x, y, halfedges, siteX, siteY);
 		}else if(type == VOR_CELLDRAW_CENTER){
-			drawCellCenter(x, y, halfedges, siteX, siteY, fill);
+			drawCellCenter(x, y, halfedges, siteX, siteY);
 		}else if(type == VOR_CELLDRAW_SITE){
-			drawCellSite(x, y, halfedges, siteX, siteY, fill);
+			drawCellSite(x, y, halfedges, siteX, siteY);
 		}
 
 	}
 
 	//Draw Cell Bounded
-	function drawCellBounded(x, y, halfedges, siteX, siteY, fill){
+	function drawCellBounded(x, y, halfedges, siteX, siteY){
 
 		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
 
@@ -306,10 +310,6 @@ var VOR_SITESTROKE = 0;
 			if (halfedges[i].getStartpoint().y < minY)
 				minY = halfedges[i].getStartpoint().y;
 		}
-
-		//Check fill flag
-		if(!fill)
-			graphics.noFill();
 
 		//Draw
 		graphics.beginShape();
@@ -329,7 +329,7 @@ var VOR_SITESTROKE = 0;
 	}
 
 	//Draw Cell Centered
-	function drawCellCenter(x, y, halfedges, siteX, siteY, fill){
+	function drawCellCenter(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
 		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
@@ -354,10 +354,6 @@ var VOR_SITESTROKE = 0;
 		let dX = maxX - minX;
 		let dY = maxY - minY;
 
-		//Check fill flag
-		if(!fill)
-			graphics.noFill();
-
 		//Draw
 		graphics.beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
@@ -376,7 +372,7 @@ var VOR_SITESTROKE = 0;
 	}
 
 	//Draw Cell Site
-	function drawCellSite(x, y, halfedges, siteX, siteY, fill){
+	function drawCellSite(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
 		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
@@ -391,10 +387,6 @@ var VOR_SITESTROKE = 0;
 			if (halfedges[i].getStartpoint().y < minY)
 				minY = halfedges[i].getStartpoint().y;
 		}
-
-		//Check fill flag
-		if(!fill)
-			graphics.noFill();
 
 		//Draw
 		graphics.beginShape();
