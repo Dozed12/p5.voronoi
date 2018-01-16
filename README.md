@@ -2,6 +2,8 @@
 
 A work-in-progress voronoi library for p5.js using the javascript implementation by [gorhill](https://github.com/gorhill/Javascript-Voronoi).
 
+![alt text](https://github.com/Dozed12/p5.voronoi/blob/master/screenshot.png)
+
 ## Instalation 
 
 Link rhill-voronoi-core.js and p5.voronoi.js to your HTML file. Make sure you link rhill-voronoi-core.js first.
