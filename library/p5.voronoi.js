@@ -18,6 +18,8 @@ var VOR_CELLSTROKE = 0;
 var VOR_SITESTROKE_WEIGHT = 3;
 var VOR_SITESTROKE = 0;
 
+var VOR_SITE = true;
+
 (function() {
 
 	var graphics;
@@ -34,26 +36,6 @@ var VOR_SITESTROKE = 0;
 	var voronoiObj = new Voronoi();
 
 	var cellColors = [];
-
-	/*
-	Stroke Setting Functions
-	*/
-	p5.prototype.voronoiCellStrokeWeight = function(v){
-		if(v > 0)
-			VOR_CELLSTROKE_WEIGHT = v;	
-	}
-	p5.prototype.voronoiCellStroke = function(v){
-		if(v > 0)
-			VOR_CELLSTROKE = v;	
-	}
-	p5.prototype.voronoiSiteStrokeWeight = function(v){
-		if(v > 0)
-			VOR_SITESTROKE_WEIGHT = v;	
-	}
-	p5.prototype.voronoiSiteStroke = function(v){
-		if(v > 0)
-			VOR_SITESTROKE = v;	
-	}
 
 	/*
 	Add Random Sites
@@ -157,11 +139,14 @@ var VOR_SITESTROKE = 0;
 			graphics.endShape(CLOSE);
 
 			//Render Site
-			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-			graphics.stroke(VOR_SITESTROKE);
-			let sX = x + voronoiDiagram.cells[i].site.x;
-			let sY = y + voronoiDiagram.cells[i].site.y;
-			graphics.point(sX,sY);
+			if(VOR_SITE){
+				graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+				graphics.stroke(VOR_SITESTROKE);
+				let sX = x + voronoiDiagram.cells[i].site.x;
+				let sY = y + voronoiDiagram.cells[i].site.y;
+				graphics.point(sX,sY);
+			}
+			
 		}
 
 		//Draw to screen
@@ -319,9 +304,11 @@ var VOR_SITESTROKE = 0;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-		graphics.stroke(VOR_SITESTROKE);
-		graphics.point(siteX - minX, siteY - minY);
+		if(VOR_SITE){
+			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+			graphics.stroke(VOR_SITESTROKE);
+			graphics.point(siteX - minX, siteY - minY);
+		}
 
 		//Draw to screen
 		image(graphics,x,y);
@@ -362,9 +349,11 @@ var VOR_SITESTROKE = 0;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-		graphics.stroke(VOR_SITESTROKE);
-		graphics.point(siteX - minX, siteY - minY);
+		if(VOR_SITE){
+			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+			graphics.stroke(VOR_SITESTROKE);
+			graphics.point(siteX - minX, siteY - minY);
+		}
 
 		//Draw to screen
 		image(graphics,x-dX/2,y-dY/2);
@@ -396,9 +385,11 @@ var VOR_SITESTROKE = 0;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-		graphics.stroke(VOR_SITESTROKE);
-		graphics.point(siteX - minX, siteY - minY);
+		if(VOR_SITE){
+			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+			graphics.stroke(VOR_SITESTROKE);
+			graphics.point(siteX - minX, siteY - minY);
+		}
 
 		//Draw to screen
 		image(graphics,x-(siteX-minX),y-(siteY-minY));
@@ -420,6 +411,16 @@ var VOR_SITESTROKE = 0;
 		var edges = voronoiDiagram.edges;
 		for (var i = 0; i < edges.length; i++) {
 			graphics.line(edges[i].va.x, edges[i].va.y, edges[i].vb.x, edges[i].vb.y);
+		}
+
+		//Draw Site
+		if(VOR_SITE){
+			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
+			graphics.stroke(VOR_SITESTROKE);
+			let cells = voronoiDiagram.cells;
+			for (var i = 0; i < cells.length; i++) {
+				graphics.point(cells[i].site.x, cells[i].site.y);
+			}
 		}
 
 		//Draw to screen
