@@ -1,6 +1,6 @@
 # p5.voronoi
 
-A work-in-progress voronoi library for p5.js using the javascript implementation by [gorhill](https://github.com/gorhill/Javascript-Voronoi).
+A voronoi library for p5.js using the Fortune's algorithm implementation by [gorhill](https://github.com/gorhill/Javascript-Voronoi).
 
 ![alt text](https://github.com/Dozed12/p5.voronoi/blob/master/screenshot.png)
 
