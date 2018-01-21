@@ -1,7 +1,7 @@
 
 function setup() {
 
-	createCanvas(windowWidth, 1000);
+	createCanvas(1200, 1000);
 
 	noSmooth();
 
