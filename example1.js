@@ -10,7 +10,7 @@ function setup() {
 	voronoiRndSites(30, 50);
 
 	//Add array of custom sites
-	voronoiSites([[5,5],[10,10],[15,15],[20,20]]);
+	voronoiSites([[5,5],[10,10],[15,15]]);
 
 	//Remove custom site with coordinates 5,5
 	voronoiRemoveSite(5, 5);
