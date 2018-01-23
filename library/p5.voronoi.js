@@ -63,8 +63,11 @@ var VOR_SITE = true;
 	p5.prototype.voronoiSites = function(newSites){
 		for (var i = 0; i < newSites.length; i++) {
 			sites.push({x:newSites[i][0],y:newSites[i][1]});
-			cellColors.push([newSites[i][0],newSites[i][1],color(random(0,255),random(0,255),random(0,255))]);
-		}
+			if(newSites[i][2] !== undefined)
+				cellColors.push([newSites[i][0],newSites[i][1],newSites[i][2]]);
+			else
+				cellColors.push([newSites[i][0],newSites[i][1],color(random(0,255),random(0,255),random(0,255))]);
+			}
 	}
 
 	/*
