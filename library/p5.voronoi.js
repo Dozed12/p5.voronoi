@@ -13,13 +13,6 @@ const VOR_CELLDRAW_BOUNDED = 1;
 const VOR_CELLDRAW_CENTER = 2;
 const VOR_CELLDRAW_SITE = 3;
 
-var VOR_CELLSTROKE_WEIGHT = 1;
-var VOR_CELLSTROKE = 0;
-var VOR_SITESTROKE_WEIGHT = 3;
-var VOR_SITESTROKE = 0;
-
-var VOR_SITE = true;
-
 (function() {
 
 	var graphics;
@@ -36,6 +29,50 @@ var VOR_SITE = true;
 	var voronoiObj = new Voronoi();
 
 	var cellColors = [];
+
+	var VOR_CELLSTROKE_WEIGHT = 1;
+	var VOR_CELLSTROKE = 0;
+	var VOR_SITESTROKE_WEIGHT = 3;
+	var VOR_SITESTROKE = 0;
+
+	var VOR_SITE = true;
+
+	/*
+	Set cell stroke weight
+	*/
+	p5.prototype.voronoiCellStrokeWeight = function(w){
+		if(w >= 0)
+			VOR_CELLSTROKE_WEIGHT = w;
+	}
+
+	/*
+	Set site stroke weight
+	*/
+	p5.prototype.voronoiSiteStrokeWeight = function(w){
+		if(w >= 0)
+			VOR_SITESTROKE_WEIGHT = w;	
+	}
+
+	/*
+	Set cell stroke
+	*/
+	p5.prototype.voronoiCellStroke = function(c){
+		VOR_CELLSTROKE = c;	
+	}
+
+	/*
+	Set site stroke
+	*/
+	p5.prototype.voronoiSiteStroke = function(c){
+		VOR_SITESTROKE = c;	
+	}
+
+	/*
+	Set flag to draw sites or not
+	*/
+	p5.prototype.voronoiSiteFlag = function(b){
+		VOR_SITE = b;	
+	}
 
 	/*
 	Add Random Sites
