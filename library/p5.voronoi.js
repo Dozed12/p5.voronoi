@@ -159,6 +159,8 @@ var VOR_SITE = true;
 
 	//Compute
 	p5.prototype.voronoi = function(width, height){
+		//Recycle diagram
+		voronoiObj.recycle(voronoiDiagram);
 		//Create Buffer
 		if(!notFirst){
 			graphics = createGraphics(width, height);
