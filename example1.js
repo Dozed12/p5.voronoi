@@ -2,8 +2,20 @@
 function setup() {
 
 	createCanvas(1200, 1000);
-
 	noSmooth();
+
+	//Settings for drawing(these are the default values)
+
+	//Set Cell Stroke Weight
+	voronoiCellStrokeWeight(1);
+	//Set Site Stroke Weight
+	voronoiSiteStrokeWeight(3);
+	//Set Cell Stroke
+	voronoiCellStroke(0);
+	//Set Site Stroke
+	voronoiSiteStroke(0);
+	//Set flag to draw Site
+	voronoiSiteFlag(true);
 
 	//Add 30 random sites with 50 minimum distance to be
 	//added upon computing
