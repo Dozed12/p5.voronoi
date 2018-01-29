@@ -213,8 +213,9 @@ const VOR_CELLDRAW_SITE = 3;
 		setRandoms(width, height);
 		//Compute
 		voronoiDiagram = voronoiObj.compute(sites,{xl:0, xr:width, yt:0, yb:height});
-		//First instance;
-		notFirst = true;
+		//First instance
+		if(!notFirst)
+			notFirst = true;
 	}
 
 	//Add Random Sites
