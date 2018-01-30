@@ -30,12 +30,12 @@ const VOR_CELLDRAW_SITE = 3;
 
 	var cellColors = [];
 
-	var VOR_CELLSTROKE_WEIGHT = 1;
-	var VOR_CELLSTROKE = 0;
-	var VOR_SITESTROKE_WEIGHT = 3;
-	var VOR_SITESTROKE = 0;
+	var cellStrokeWeight = 1;
+	var cellStroke = 0;
+	var siteStrokeWeight = 3;
+	var siteStroke = 0;
 
-	var VOR_SITE = true;
+	var drawSites = true;
 
 	var step = 15;
 	var jitterFactor = 3;
@@ -45,7 +45,7 @@ const VOR_CELLDRAW_SITE = 3;
 	*/
 	p5.prototype.voronoiCellStrokeWeight = function(w){
 		if(w >= 0)
-			VOR_CELLSTROKE_WEIGHT = w;
+			cellStrokeWeight = w;
 	}
 
 	/*
@@ -53,28 +53,28 @@ const VOR_CELLDRAW_SITE = 3;
 	*/
 	p5.prototype.voronoiSiteStrokeWeight = function(w){
 		if(w >= 0)
-			VOR_SITESTROKE_WEIGHT = w;	
+			siteStrokeWeight = w;	
 	}
 
 	/*
 	Set cell stroke
 	*/
 	p5.prototype.voronoiCellStroke = function(c){
-		VOR_CELLSTROKE = c;	
+		cellStroke = c;	
 	}
 
 	/*
 	Set site stroke
 	*/
 	p5.prototype.voronoiSiteStroke = function(c){
-		VOR_SITESTROKE = c;	
+		siteStroke = c;	
 	}
 
 	/*
 	Set flag to draw sites or not
 	*/
 	p5.prototype.voronoiSiteFlag = function(b){
-		VOR_SITE = b;	
+		drawSites = b;	
 	}
 
 	/*
@@ -167,8 +167,8 @@ const VOR_CELLDRAW_SITE = 3;
 		//Render Cells
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
 
-			graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
-			graphics.stroke(VOR_CELLSTROKE);
+			graphics.strokeWeight(cellStrokeWeight);
+			graphics.stroke(cellStroke);
 
 			//Load Color
 			setFillColorCell(i);
@@ -182,9 +182,9 @@ const VOR_CELLDRAW_SITE = 3;
 			graphics.endShape(CLOSE);
 
 			//Render Site
-			if(VOR_SITE){
-				graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-				graphics.stroke(VOR_SITESTROKE);
+			if(drawSites){
+				graphics.strokeWeight(siteStrokeWeight);
+				graphics.stroke(siteStroke);
 				let sX = x + voronoiDiagram.cells[i].site.x;
 				let sY = y + voronoiDiagram.cells[i].site.y;
 				graphics.point(sX,sY);
@@ -332,7 +332,7 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Cell Bounded
 	function drawCellBounded(x, y, halfedges, siteX, siteY){
 
-		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
+		graphics.strokeWeight(cellStrokeWeight);
 
 		//Find minimums
 		let minX = Number.MAX_VALUE;
@@ -352,9 +352,9 @@ const VOR_CELLDRAW_SITE = 3;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		if(VOR_SITE){
-			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-			graphics.stroke(VOR_SITESTROKE);
+		if(drawSites){
+			graphics.strokeWeight(siteStrokeWeight);
+			graphics.stroke(siteStroke);
 			graphics.point(siteX - minX, siteY - minY);
 		}
 
@@ -367,8 +367,8 @@ const VOR_CELLDRAW_SITE = 3;
 	function drawCellCenter(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
-		graphics.stroke(VOR_CELLSTROKE);
+		graphics.strokeWeight(cellStrokeWeight);
+		graphics.stroke(cellStroke);
 
 		//Find minimums and maximums
 		let minX = Number.MAX_VALUE;
@@ -397,9 +397,9 @@ const VOR_CELLDRAW_SITE = 3;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		if(VOR_SITE){
-			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-			graphics.stroke(VOR_SITESTROKE);
+		if(drawSites){
+			graphics.strokeWeight(siteStrokeWeight);
+			graphics.stroke(siteStroke);
 			graphics.point(siteX - minX, siteY - minY);
 		}
 
@@ -412,8 +412,8 @@ const VOR_CELLDRAW_SITE = 3;
 	function drawCellSite(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
-		graphics.stroke(VOR_CELLSTROKE);
+		graphics.strokeWeight(cellStrokeWeight);
+		graphics.stroke(cellStroke);
 
 		//Find minimums and maximums
 		let minX = Number.MAX_VALUE;
@@ -433,9 +433,9 @@ const VOR_CELLDRAW_SITE = 3;
 		graphics.endShape(CLOSE);
 
 		//Draw Site
-		if(VOR_SITE){
-			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-			graphics.stroke(VOR_SITESTROKE);
+		if(drawSites){
+			graphics.strokeWeight(siteStrokeWeight);
+			graphics.stroke(siteStroke);
 			graphics.point(siteX - minX, siteY - minY);
 		}
 
@@ -452,8 +452,8 @@ const VOR_CELLDRAW_SITE = 3;
 		graphics.noSmooth();
 
 		//Stroke Settings
-		graphics.strokeWeight(VOR_CELLSTROKE_WEIGHT);
-		graphics.stroke(VOR_CELLSTROKE);
+		graphics.strokeWeight(cellStrokeWeight);
+		graphics.stroke(cellStroke);
 
 		//Render Frame
 		var edges = voronoiDiagram.edges;
@@ -462,9 +462,9 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 
 		//Draw Site
-		if(VOR_SITE){
-			graphics.strokeWeight(VOR_SITESTROKE_WEIGHT);
-			graphics.stroke(VOR_SITESTROKE);
+		if(drawSites){
+			graphics.strokeWeight(siteStrokeWeight);
+			graphics.stroke(siteStroke);
 			let cells = voronoiDiagram.cells;
 			for (var i = 0; i < cells.length; i++) {
 				graphics.point(cells[i].site.x, cells[i].site.y);
