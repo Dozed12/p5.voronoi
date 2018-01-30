@@ -37,6 +37,9 @@ const VOR_CELLDRAW_SITE = 3;
 
 	var VOR_SITE = true;
 
+	var step = 15;
+	var jitterFactor = 3;
+
 	/*
 	Set cell stroke weight
 	*/
@@ -250,89 +253,6 @@ const VOR_CELLDRAW_SITE = 3;
 			if (tries >= triesLimit)
 				console.log("Warning: setRandoms tries limit reached: minimum distance(" + randomMinimumDist + ") not ensured");
 		}
-	}
-
-	//Adds jitter to cells
-	//TODO option to not jitter diagram border
-	//TODO settings as separate variables
-	function jitter(){
-		const step = 15;
-		const jitterFactor = 3;
-		var cells = [];
-		var edgeMemory = [];
-		//For each cell
-		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
-			var vertices = [];
-			//For each edge
-			for (var j = 0; j < voronoiDiagram.cells[i].halfedges.length; j++) {
-				const edge = voronoiDiagram.cells[i].halfedges[j];
-				//Look for edge in memory
-				var found = false;
-				var id = 0;
-				for (var e = 0; e < edgeMemory.length; e++) {
-					//Found flipped
-					if(edgeMemory[e][0].getEndpoint() === edge.getStartpoint() &&
-					 edgeMemory[e][0].getStartpoint() === edge.getEndpoint()){
-						found = true;
-						id = e;
-						break;
-					}
-				}
-				//If found flipped -> flipped copy
-				if(found){
-					for (var e = edgeMemory[id][1].length-1; e > 0; e--) {
-						vertices.push(edgeMemory[id][1][e]);
-					}
-				}
-				//If not found do jitter
-				else{
-					//Edge info to save
-					memEdge = [];
-					//Edge Details					
-					const dX = edge.getEndpoint().x - edge.getStartpoint().x;
-					const dY = edge.getEndpoint().y - edge.getStartpoint().y;
-					const delta = createVector(dX, dY);
-					const deltaNorm = delta.copy(); deltaNorm.normalize();
-					const deltaMag = delta.mag();
-					const perpendicularNorm = deltaNorm.copy(); perpendicularNorm.rotate(HALF_PI);
-					let start = createVector(edge.getStartpoint().x, edge.getStartpoint().y);
-					let pos = start.copy();
-					let jitterVal = 0;
-					//Add first edge vertice
-					vertices.push([start.x,start.y]);
-					memEdge.push([start.x,start.y]);
-					//Jitter Vertices
-					var total = step;
-					while(total < deltaMag){
-						//Advance pos
-						pos = p5.Vector.add(start, p5.Vector.mult(deltaNorm, total));
-						//Jitter Perpendicularly
-						jitterVal = (random(0,201)-100)/100;
-						jitterVal *= jitterFactor;
-						pos.add(p5.Vector.mult(perpendicularNorm, jitterVal));
-						//Add vertice
-						vertices.push([pos.x,pos.y]);
-						memEdge.push([pos.x,pos.y]);
-						//Advance
-						total += step;
-					}
-					//Add to edge memory
-					memEdge.push([edge.getEndpoint().x, edge.getEndpoint().y]);
-					edgeMemory.push([edge, memEdge]);
-				}
-			}
-			cells.push(vertices);
-		}		
-
-		//TEST DRAW
-		for (var i = 0; i < cells.length; i++) {
-			beginShape();
-			for (var j = 0; j < cells[i].length; j++) {
-				vertex(cells[i][j][0], cells[i][j][1]);
-			}
-			endShape(CLOSE);
-		}
-
 	}
 
 	//Eucledian Distance
@@ -563,6 +483,106 @@ const VOR_CELLDRAW_SITE = 3;
 				return;
 			}
 		}
+	}
+
+	//Adds jitter to cells
+	function jitter(jitterEdges = true){
+		var cells = [];
+		var edgeMemory = [];
+		//For each cell
+		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
+			var vertices = [];
+			//For each edge
+			for (var j = 0; j < voronoiDiagram.cells[i].halfedges.length; j++) {
+				const edge = voronoiDiagram.cells[i].halfedges[j];
+				//Detect diagram edge
+				if(jitterEdges){
+					if((edge.getStartpoint().x == 0 && edge.getEndpoint().x == 0) ||
+						(edge.getStartpoint().y == 0 && edge.getEndpoint().y == 0)||
+						(edge.getStartpoint().x == imgWidth && edge.getEndpoint().x == imgWidth)||
+						(edge.getStartpoint().y == imgHeight && edge.getEndpoint().y == imgHeight)){
+						vertices.push([edge.getStartpoint().x, edge.getStartpoint().y]);
+						continue;
+					}
+				}
+				//Look for edge in memory
+				var found = false;
+				var id = 0;
+				for (var e = 0; e < edgeMemory.length; e++) {
+					//Found flipped
+					if(edgeMemory[e][0].getEndpoint() === edge.getStartpoint() &&
+					 edgeMemory[e][0].getStartpoint() === edge.getEndpoint()){
+						found = true;
+						id = e;
+						break;
+					}
+				}
+				//If found flipped -> flipped copy
+				if(found){
+					for (var e = edgeMemory[id][1].length-1; e > 0; e--) {
+						vertices.push(edgeMemory[id][1][e]);
+					}
+				}
+				//If not found do jitter
+				else{
+					jitterEdge(vertices, edge, edgeMemory);
+				}
+			}
+			cells.push(vertices);
+		}		
+
+		/*TEST DRAW
+		for (var i = 0; i < cells.length; i++) {
+			beginShape();
+			for (var j = 0; j < cells[i].length; j++) {
+				vertex(cells[i][j][0]+100, cells[i][j][1]+100);
+			}
+			endShape(CLOSE);
+		}*/
+
+	}
+
+	//Jitter edge and add to vertices list
+	function jitterEdge(vertices, edge, edgeMemory){
+
+		//Edge info to save
+		memEdge = [];
+
+		//Edge Details					
+		const dX = edge.getEndpoint().x - edge.getStartpoint().x;
+		const dY = edge.getEndpoint().y - edge.getStartpoint().y;
+		const delta = createVector(dX, dY);
+		const deltaNorm = delta.copy(); deltaNorm.normalize();
+		const deltaMag = delta.mag();
+		const perpendicularNorm = deltaNorm.copy(); perpendicularNorm.rotate(HALF_PI);
+		let start = createVector(edge.getStartpoint().x, edge.getStartpoint().y);
+		let pos = start.copy();
+		let jitterVal = 0;
+
+		//Add first edge vertice
+		vertices.push([start.x,start.y]);
+		memEdge.push([start.x,start.y]);
+
+		//Jitter Vertices
+		var total = step;
+		while(total < deltaMag){
+			//Advance pos
+			pos = p5.Vector.add(start, p5.Vector.mult(deltaNorm, total));
+			//Jitter Perpendicularly
+			jitterVal = (random(0,201)-100)/100;
+			jitterVal *= jitterFactor;
+			pos.add(p5.Vector.mult(perpendicularNorm, jitterVal));
+			//Add vertice
+			vertices.push([pos.x,pos.y]);
+			memEdge.push([pos.x,pos.y]);
+			//Advance
+			total += step;
+		}
+
+		//Add to edge memory
+		memEdge.push([edge.getEndpoint().x, edge.getEndpoint().y]);
+		edgeMemory.push([edge, memEdge]);
+
 	}
 
 })();
