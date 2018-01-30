@@ -496,7 +496,7 @@ const VOR_CELLDRAW_SITE = 3;
 			for (var j = 0; j < voronoiDiagram.cells[i].halfedges.length; j++) {
 				const edge = voronoiDiagram.cells[i].halfedges[j];
 				//Detect diagram edge
-				if(jitterEdges){
+				if(!jitterEdges){
 					if((edge.getStartpoint().x == 0 && edge.getEndpoint().x == 0) ||
 						(edge.getStartpoint().y == 0 && edge.getEndpoint().y == 0)||
 						(edge.getStartpoint().x == imgWidth && edge.getEndpoint().x == imgWidth)||
