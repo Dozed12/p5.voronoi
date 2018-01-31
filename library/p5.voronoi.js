@@ -37,8 +37,11 @@ const VOR_CELLDRAW_SITE = 3;
 
 	var drawSites = true;
 
-	var step = 15;
+	var jitterStep = 15;
 	var jitterFactor = 3;
+	var jitterFlag = true;
+	var jitterBorderFlag = true;
+	var jitterCells = [];
 
 	/*
 	Set cell stroke weight
@@ -159,7 +162,13 @@ const VOR_CELLDRAW_SITE = 3;
 	}
 
 	//Draw Diagram
-	p5.prototype.voronoiDraw = function(x, y){
+	p5.prototype.voronoiDraw = function(x, y, jitter = false){
+
+		//Draw Jitter version
+		if(jitter){
+			voronoiDrawJitter(x, y);
+			return;
+		}
 
 		//Reset Graphics
 		graphics.resizeCanvas(imgWidth,imgHeight,true);
@@ -201,23 +210,31 @@ const VOR_CELLDRAW_SITE = 3;
 	p5.prototype.voronoi = function(width, height){
 		//Recycle diagram
 		voronoiObj.recycle(voronoiDiagram);
+
 		//Create Buffer
 		if(!notFirst){
 			graphics = createGraphics(width, height);
 			graphics.noSmooth();
 		}
+
 		//Remove Old Randoms
 		if(notFirst)
 			sites.splice(sites.length-nRandoms,nRandoms);
+
 		//Set Diagram Size
 		imgWidth = width;
 		imgHeight = height;
+
 		//Set Random Sites
 		setRandoms(width, height);
+
 		//Compute
 		voronoiDiagram = voronoiObj.compute(sites,{xl:0, xr:width, yt:0, yb:height});
+
 		//Create Jitter
-		jitter();
+		if(jitterFlag)
+			jitter(jitterBorderFlag);
+
 		//First instance
 		if(!notFirst)
 			notFirst = true;
@@ -445,7 +462,13 @@ const VOR_CELLDRAW_SITE = 3;
 	}
 
 	//Draw Diagram Frame
-	p5.prototype.voronoiDrawFrame = function(x, y){
+	p5.prototype.voronoiDrawFrame = function(x, y, jitter = false){
+
+		//Draw Jitter
+		if(jitter){
+			voronoiDrawJitterFrame(x, y);
+			return;
+		}
 
 		//Reset Graphics
 		graphics.resizeCanvas(imgWidth,imgHeight,true);
@@ -476,18 +499,21 @@ const VOR_CELLDRAW_SITE = 3;
 	}
 
 	//Set fill color from cell
-	function setFillColorCell(cellId){
+	function setFillColorCell(cellId, toBuffer = true){
 		for (var c = 0; c < cellColors.length; c++) {
 			if(cellColors[c][0] == voronoiDiagram.cells[cellId].site.x && cellColors[c][1] == voronoiDiagram.cells[cellId].site.y){
-				graphics.fill(cellColors[c][2]);
+				if(toBuffer)
+					graphics.fill(cellColors[c][2]);
+				else
+					fill(cellColors[c][2]);
 				return;
 			}
 		}
 	}
 
-	//Adds jitter to cells
+	//Creates jittered version of cells
 	function jitter(jitterEdges = true){
-		var cells = [];
+		jitterCells = [];
 		var edgeMemory = [];
 		//For each cell
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
@@ -528,14 +554,14 @@ const VOR_CELLDRAW_SITE = 3;
 					jitterEdge(vertices, edge, edgeMemory);
 				}
 			}
-			cells.push(vertices);
+			jitterCells.push(vertices);
 		}		
 
 		/*TEST DRAW
-		for (var i = 0; i < cells.length; i++) {
+		for (var i = 0; i < jitterCells.length; i++) {
 			beginShape();
-			for (var j = 0; j < cells[i].length; j++) {
-				vertex(cells[i][j][0]+100, cells[i][j][1]+100);
+			for (var j = 0; j < jitterCells[i].length; j++) {
+				vertex(jitterCells[i][j][0]+100, jitterCells[i][j][1]+100);
 			}
 			endShape(CLOSE);
 		}*/
@@ -564,7 +590,7 @@ const VOR_CELLDRAW_SITE = 3;
 		memEdge.push([start.x,start.y]);
 
 		//Jitter Vertices
-		var total = step;
+		var total = jitterStep;
 		while(total < deltaMag){
 			//Advance pos
 			pos = p5.Vector.add(start, p5.Vector.mult(deltaNorm, total));
@@ -576,13 +602,80 @@ const VOR_CELLDRAW_SITE = 3;
 			vertices.push([pos.x,pos.y]);
 			memEdge.push([pos.x,pos.y]);
 			//Advance
-			total += step;
+			total += jitterStep;
 		}
 
 		//Add to edge memory
 		memEdge.push([edge.getEndpoint().x, edge.getEndpoint().y]);
 		edgeMemory.push([edge, memEdge]);
 
+	}
+
+	//Draw Diagram with Jitter
+	p5.prototype.voronoiDrawJitter = function(x, y){
+
+		push();
+
+		//Render Cells
+		for (var i = 0; i < jitterCells.length; i++) {
+
+			strokeWeight(cellStrokeWeight);
+			stroke(cellStroke);
+
+			//Load Color
+			setFillColorCell(i, false);
+
+			//Shape
+			beginShape();
+			for (var j = 0; j < jitterCells[i].length; j++) {
+				vertex(jitterCells[i][j][0], jitterCells[i][j][1]);
+			}
+			endShape(CLOSE);
+
+			//Render Site
+			if(drawSites){
+				strokeWeight(siteStrokeWeight);
+				stroke(siteStroke);
+				let sX = x + voronoiDiagram.cells[i].site.x;
+				let sY = y + voronoiDiagram.cells[i].site.y;
+				point(sX,sY);
+			}
+		}
+
+		pop();
+
+	}
+
+	//Draw Diagram Frame
+	p5.prototype.voronoiDrawJitterFrame = function(x, y){
+
+		push();
+
+		//Reset Graphics
+		noSmooth();
+
+		//Render Cells
+		for (var i = 0; i < jitterCells.length; i++) {
+
+			strokeWeight(cellStrokeWeight);
+			stroke(cellStroke);
+
+			//Shape
+			for (var j = 1; j < jitterCells[i].length; j++) {
+				line(jitterCells[i][j][0] + x, jitterCells[i][j][1] + y, jitterCells[i][j-1][0] + x, jitterCells[i][j-1][1] + y);
+			}
+
+			//Render Site
+			if(drawSites){
+				strokeWeight(siteStrokeWeight);
+				stroke(siteStroke);
+				let sX = x + voronoiDiagram.cells[i].site.x;
+				let sY = y + voronoiDiagram.cells[i].site.y;
+				point(sX,sY);
+			}
+		}
+
+		pop();
 	}
 
 })();
