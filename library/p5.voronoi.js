@@ -15,8 +15,6 @@ const VOR_CELLDRAW_SITE = 3;
 
 (function() {
 
-	var graphics;
-
 	var imgWidth;
 	var imgHeight;
 
@@ -170,39 +168,37 @@ const VOR_CELLDRAW_SITE = 3;
 			return;
 		}
 
-		//Reset Graphics
-		graphics.resizeCanvas(imgWidth,imgHeight,true);
+		push();
 
 		//Render Cells
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
 
-			graphics.strokeWeight(cellStrokeWeight);
-			graphics.stroke(cellStroke);
+			strokeWeight(cellStrokeWeight);
+			stroke(cellStroke);
 
 			//Load Color
 			setFillColorCell(i);
 
 			//Shape
-			graphics.beginShape();
+			beginShape();
 			for (var j = 0; j < voronoiDiagram.cells[i].halfedges.length; j++) {
 				var halfEdge = voronoiDiagram.cells[i].halfedges[j];
 				vertex(x + halfEdge.getStartpoint().x,y + halfEdge.getStartpoint().y);
 			}
-			graphics.endShape(CLOSE);
+			endShape(CLOSE);
 
 			//Render Site
 			if(drawSites){
-				graphics.strokeWeight(siteStrokeWeight);
-				graphics.stroke(siteStroke);
+				strokeWeight(siteStrokeWeight);
+				stroke(siteStroke);
 				let sX = x + voronoiDiagram.cells[i].site.x;
 				let sY = y + voronoiDiagram.cells[i].site.y;
-				graphics.point(sX,sY);
+				point(sX,sY);
 			}
 			
 		}
 
-		//Draw to screen
-		image(graphics,x,y);
+		pop();
 
 	}
 
@@ -210,12 +206,6 @@ const VOR_CELLDRAW_SITE = 3;
 	p5.prototype.voronoi = function(width, height){
 		//Recycle diagram
 		voronoiObj.recycle(voronoiDiagram);
-
-		//Create Buffer
-		if(!notFirst){
-			graphics = createGraphics(width, height);
-			graphics.noSmooth();
-		}
 
 		//Remove Old Randoms
 		if(notFirst)
@@ -318,10 +308,6 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw a voronoi Cell
 	p5.prototype.voronoiDrawCell = function(x, y, id, type, fill = true){
 
-		//Reset Graphics
-		graphics.resizeCanvas(imgWidth,imgHeight,true);
-		graphics.noSmooth();
-
 		if(id >= voronoiDiagram.cells.length || id === undefined)
 			return;
 
@@ -329,12 +315,14 @@ const VOR_CELLDRAW_SITE = 3;
 		var siteX = voronoiDiagram.cells[id].site.x;
 		var siteY = voronoiDiagram.cells[id].site.y;
 
+		push();
+
 		//Load Color
 		setFillColorCell(id);
 
 		//Check fill flag
 		if(!fill)
-			graphics.noFill();
+			noFill();
 
 		if (type == VOR_CELLDRAW_BOUNDED) {
 			drawCellBounded(x, y, halfedges, siteX, siteY);
@@ -349,7 +337,9 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Cell Bounded
 	function drawCellBounded(x, y, halfedges, siteX, siteY){
 
-		graphics.strokeWeight(cellStrokeWeight);
+		//Stroke Settings
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
 
 		//Find minimums
 		let minX = Number.MAX_VALUE;
@@ -362,21 +352,20 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 
 		//Draw
-		graphics.beginShape();
+		beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
-			vertex(halfedges[i].getStartpoint().x - minX, halfedges[i].getStartpoint().y - minY);
+			vertex(halfedges[i].getStartpoint().x - minX + x, halfedges[i].getStartpoint().y - minY + y);
 		}
-		graphics.endShape(CLOSE);
+		endShape(CLOSE);
 
 		//Draw Site
 		if(drawSites){
-			graphics.strokeWeight(siteStrokeWeight);
-			graphics.stroke(siteStroke);
-			graphics.point(siteX - minX, siteY - minY);
+			strokeWeight(siteStrokeWeight);
+			stroke(siteStroke);
+			point(siteX - minX + x, siteY - minY + y);
 		}
 
-		//Draw to screen
-		image(graphics,x,y);
+		pop();
 
 	}
 
@@ -384,8 +373,8 @@ const VOR_CELLDRAW_SITE = 3;
 	function drawCellCenter(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		graphics.strokeWeight(cellStrokeWeight);
-		graphics.stroke(cellStroke);
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
 
 		//Find minimums and maximums
 		let minX = Number.MAX_VALUE;
@@ -407,21 +396,20 @@ const VOR_CELLDRAW_SITE = 3;
 		let dY = maxY - minY;
 
 		//Draw
-		graphics.beginShape();
+		beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
-			vertex(halfedges[i].getStartpoint().x - minX, halfedges[i].getStartpoint().y - minY);
+			vertex(halfedges[i].getStartpoint().x - minX + x-dX/2, halfedges[i].getStartpoint().y - minY + y-dY/2);
 		}
-		graphics.endShape(CLOSE);
+		endShape(CLOSE);
 
 		//Draw Site
 		if(drawSites){
-			graphics.strokeWeight(siteStrokeWeight);
-			graphics.stroke(siteStroke);
-			graphics.point(siteX - minX, siteY - minY);
+			strokeWeight(siteStrokeWeight);
+			stroke(siteStroke);
+			point(siteX - minX + x-dX/2, siteY - minY + y-dY/2);
 		}
 
-		//Draw to screen
-		image(graphics,x-dX/2,y-dY/2);
+		pop();
 
 	}
 
@@ -429,8 +417,8 @@ const VOR_CELLDRAW_SITE = 3;
 	function drawCellSite(x, y, halfedges, siteX, siteY){
 
 		//Stroke Settings
-		graphics.strokeWeight(cellStrokeWeight);
-		graphics.stroke(cellStroke);
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
 
 		//Find minimums and maximums
 		let minX = Number.MAX_VALUE;
@@ -443,21 +431,20 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 
 		//Draw
-		graphics.beginShape();
+		beginShape();
 		for (var i = 0; i < halfedges.length; i++) {
-			vertex(halfedges[i].getStartpoint().x - minX, halfedges[i].getStartpoint().y - minY);
+			vertex(halfedges[i].getStartpoint().x - minX + x-(siteX-minX), halfedges[i].getStartpoint().y - minY + y-(siteY-minY));
 		}
-		graphics.endShape(CLOSE);
+		endShape(CLOSE);
 
 		//Draw Site
 		if(drawSites){
-			graphics.strokeWeight(siteStrokeWeight);
-			graphics.stroke(siteStroke);
-			graphics.point(siteX - minX, siteY - minY);
+			strokeWeight(siteStrokeWeight);
+			stroke(siteStroke);
+			point(siteX - minX + x-(siteX-minX), siteY - minY + y-(siteY-minY));
 		}
 
-		//Draw to screen
-		image(graphics,x-(siteX-minX),y-(siteY-minY));
+		pop();
 
 	}
 
@@ -470,43 +457,37 @@ const VOR_CELLDRAW_SITE = 3;
 			return;
 		}
 
-		//Reset Graphics
-		graphics.resizeCanvas(imgWidth,imgHeight,true);
-		graphics.noSmooth();
+		push();
 
 		//Stroke Settings
-		graphics.strokeWeight(cellStrokeWeight);
-		graphics.stroke(cellStroke);
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
 
 		//Render Frame
 		var edges = voronoiDiagram.edges;
 		for (var i = 0; i < edges.length; i++) {
-			graphics.line(edges[i].va.x, edges[i].va.y, edges[i].vb.x, edges[i].vb.y);
+			line(edges[i].va.x + x, edges[i].va.y + y, edges[i].vb.x + x, edges[i].vb.y + y);
 		}
 
 		//Draw Site
 		if(drawSites){
-			graphics.strokeWeight(siteStrokeWeight);
-			graphics.stroke(siteStroke);
+			strokeWeight(siteStrokeWeight);
+			stroke(siteStroke);
 			let cells = voronoiDiagram.cells;
 			for (var i = 0; i < cells.length; i++) {
-				graphics.point(cells[i].site.x, cells[i].site.y);
+				point(cells[i].site.x + x, cells[i].site.y + y);
 			}
 		}
 
-		//Draw to screen
-		image(graphics,x,y);
+		pop();
+
 	}
 
 	//Set fill color from cell
-	function setFillColorCell(cellId, toBuffer = true){
+	function setFillColorCell(cellId){
 		for (var c = 0; c < cellColors.length; c++) {
 			if(cellColors[c][0] == voronoiDiagram.cells[cellId].site.x && cellColors[c][1] == voronoiDiagram.cells[cellId].site.y){
-				if(toBuffer)
-					graphics.fill(cellColors[c][2]);
-				else
-					fill(cellColors[c][2]);
-				return;
+				fill(cellColors[c][2]);
 			}
 		}
 	}
@@ -623,7 +604,7 @@ const VOR_CELLDRAW_SITE = 3;
 			stroke(cellStroke);
 
 			//Load Color
-			setFillColorCell(i, false);
+			setFillColorCell(i);
 
 			//Shape
 			beginShape();
@@ -650,9 +631,6 @@ const VOR_CELLDRAW_SITE = 3;
 	p5.prototype.voronoiDrawJitterFrame = function(x, y){
 
 		push();
-
-		//Reset Graphics
-		noSmooth();
 
 		//Render Cells
 		for (var i = 0; i < jitterCells.length; i++) {
