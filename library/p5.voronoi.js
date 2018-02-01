@@ -162,7 +162,7 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Diagram
 	p5.prototype.voronoiDraw = function(x, y, jitter = false){
 
-		//Draw Jitter version
+		//Draw Jitter instead
 		if(jitter){
 			voronoiDrawJitter(x, y);
 			return;
@@ -306,7 +306,7 @@ const VOR_CELLDRAW_SITE = 3;
 	}
 
 	//Draw a voronoi Cell
-	p5.prototype.voronoiDrawCell = function(x, y, id, type, fill = true){
+	p5.prototype.voronoiDrawCell = function(x, y, id, type, fill = true, jitter = false){
 
 		if(id >= voronoiDiagram.cells.length || id === undefined)
 			return;
@@ -325,11 +325,23 @@ const VOR_CELLDRAW_SITE = 3;
 			noFill();
 
 		if (type == VOR_CELLDRAW_BOUNDED) {
-			drawCellBounded(x, y, halfedges, siteX, siteY);
+			if(jitter){
+				drawCellBoundedJitter(x, y, id, siteX, siteY);
+			}else{
+				drawCellBounded(x, y, halfedges, siteX, siteY);
+			}			
 		}else if(type == VOR_CELLDRAW_CENTER){
-			drawCellCenter(x, y, halfedges, siteX, siteY);
+			if(jitter){
+				drawCellCenterJitter(x, y, id, siteX, siteY);
+			}else{
+				drawCellCenter(x, y, halfedges, siteX, siteY);
+			}
 		}else if(type == VOR_CELLDRAW_SITE){
-			drawCellSite(x, y, halfedges, siteX, siteY);
+			if(jitter){
+				drawCellSiteJitter(x, y, id, siteX, siteY);
+			}else{
+				drawCellSite(x, y, halfedges, siteX, siteY);
+			}
 		}
 
 	}
@@ -369,8 +381,43 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
+	//Draw Cell Bounded Jitter
+	function drawCellBoundedJitter(x, y, id, siteX, siteY){
+
+		//Stroke Settings
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
+
+		//Find minimums
+		let minX = Number.MAX_VALUE;
+		let minY = Number.MAX_VALUE;
+		for (var i = 0; i < jitterCells[id].length; i++) {
+			if (jitterCells[id][i][0] < minX)
+				minX = jitterCells[id][i][0];
+			if (jitterCells[id][i][1] < minY)
+				minY = jitterCells[id][i][1];
+		}
+
+		//Draw
+		beginShape();
+		for (var i = 0; i < jitterCells[id].length; i++) {
+			vertex(jitterCells[id][i][0] - minX + x, jitterCells[id][i][1] - minY + y);
+		}
+		endShape(CLOSE);
+
+		//Draw Site
+		if(drawSites){
+			strokeWeight(siteStrokeWeight);
+			stroke(siteStroke);
+			point(siteX - minX + x, siteY - minY + y);
+		}
+
+		pop();
+
+	}
+
 	//Draw Cell Centered
-	function drawCellCenter(x, y, halfedges, siteX, siteY){
+	function drawCellCenter(x, y, halfedges, siteX, siteY, jitter){
 
 		//Stroke Settings
 		strokeWeight(cellStrokeWeight);
@@ -413,8 +460,52 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
+	//Draw Cell Centered Jitter
+	function drawCellCenterJitter(x, y, id, siteX, siteY){
+
+		//Stroke Settings
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
+
+		//Find minimums and maximums
+		let minX = Number.MAX_VALUE;
+		let minY = Number.MAX_VALUE;
+		let maxX = 0;
+		let maxY = 0;
+		for (var i = 0; i < jitterCells[id].length; i++) {
+			if (jitterCells[id][i][0] < minX)
+				minX = jitterCells[id][i][0];
+			if (jitterCells[id][i][1] < minY)
+				minY = jitterCells[id][i][1];
+			if (jitterCells[id][i][0] > maxX)
+				maxX = jitterCells[id][i][0];
+			if (jitterCells[id][i][1] > maxY)
+				maxY = jitterCells[id][i][1];
+		}
+
+		let dX = maxX - minX;
+		let dY = maxY - minY;
+
+		//Draw
+		beginShape();
+		for (var i = 0; i < jitterCells[id].length; i++) {
+			vertex(jitterCells[id][i][0] - minX + x-dX/2, jitterCells[id][i][1] - minY + y-dY/2);
+		}
+		endShape(CLOSE);
+
+		//Draw Site
+		if(drawSites){
+			strokeWeight(siteStrokeWeight);
+			stroke(siteStroke);
+			point(siteX - minX + x-dX/2, siteY - minY + y-dY/2);
+		}
+
+		pop();
+
+	}
+
 	//Draw Cell Site
-	function drawCellSite(x, y, halfedges, siteX, siteY){
+	function drawCellSite(x, y, halfedges, siteX, siteY, jitter){
 
 		//Stroke Settings
 		strokeWeight(cellStrokeWeight);
@@ -448,10 +539,45 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
+	//Draw Cell Site Jitter
+	function drawCellSiteJitter(x, y, id, siteX, siteY){
+
+		//Stroke Settings
+		strokeWeight(cellStrokeWeight);
+		stroke(cellStroke);
+
+		//Find minimums and maximums
+		let minX = Number.MAX_VALUE;
+		let minY = Number.MAX_VALUE;
+		for (var i = 0; i < jitterCells[id].length; i++) {
+			if (jitterCells[id][i][0] < minX)
+				minX = jitterCells[id][i][0];
+			if (jitterCells[id][i][1] < minY)
+				minY = jitterCells[id][i][1];
+		}
+
+		//Draw
+		beginShape();
+		for (var i = 0; i < jitterCells[id].length; i++) {
+			vertex(jitterCells[id][i][0] - minX + x-(siteX-minX), jitterCells[id][i][1] - minY + y-(siteY-minY));
+		}
+		endShape(CLOSE);
+
+		//Draw Site
+		if(drawSites){
+			strokeWeight(siteStrokeWeight);
+			stroke(siteStroke);
+			point(siteX - minX + x-(siteX-minX), siteY - minY + y-(siteY-minY));
+		}
+
+		pop();
+
+	}
+
 	//Draw Diagram Frame
 	p5.prototype.voronoiDrawFrame = function(x, y, jitter = false){
 
-		//Draw Jitter
+		//Draw Jitter instead
 		if(jitter){
 			voronoiDrawJitterFrame(x, y);
 			return;
