@@ -530,6 +530,21 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 	}
 
+	/*
+	Set Jitter step
+	*/
+	p5.prototype.voronoiJitterStep = function(s){
+		if(s >= 0)
+			jitterStep = s;
+	}
+
+	/*
+	Set Jitter factor
+	*/
+	p5.prototype.voronoiJitterFactor = function(f){
+		jitterStep = f;
+	}
+
 	//Creates jittered version of cells
 	function jitter(jitterEdges = true){
 		jitterCells = [];
