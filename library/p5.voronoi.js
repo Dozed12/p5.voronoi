@@ -443,7 +443,7 @@ const VOR_CELLDRAW_SITE = 3;
 	}
 
 	//Draw Diagram
-	p5.prototype.voronoiDraw = function(x, y, jitter = false){
+	p5.prototype.voronoiDraw = function(x, y, fill = true, jitter = false){
 
 		var target = cells;
 
@@ -453,6 +453,10 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 
 		push();
+
+		//Draw Frame only
+		if(!fill)
+			noFill();
 
 		//Render Cells
 		for (var i = 0; i < target.length; i++) {
@@ -461,51 +465,15 @@ const VOR_CELLDRAW_SITE = 3;
 			stroke(cellStroke);
 
 			//Load Color
-			setFillColorCell(i);
+			if(fill)
+				setFillColorCell(i);
 
 			//Shape
 			beginShape();
 			for (var j = 0; j < target[i].length; j++) {
-				vertex(target[i][j][0], target[i][j][1]);
+				vertex(target[i][j][0] + x, target[i][j][1] + y);
 			}
 			endShape(CLOSE);
-
-			//Render Site
-			if(drawSites){
-				strokeWeight(siteStrokeWeight);
-				stroke(siteStroke);
-				let sX = x + voronoiDiagram.cells[i].site.x;
-				let sY = y + voronoiDiagram.cells[i].site.y;
-				point(sX,sY);
-			}
-		}
-
-		pop();
-
-	}
-
-	//Draw Diagram Frame
-	p5.prototype.voronoiDrawFrame = function(x, y, jitter = false){
-
-		var target = cells;
-
-		//Draw Jitter instead
-		if(jitter){
-			target = jitterCells;
-		}
-
-		push();
-
-		//Render Cells
-		for (var i = 0; i < target.length; i++) {
-
-			strokeWeight(cellStrokeWeight);
-			stroke(cellStroke);
-
-			//Shape
-			for (var j = 1; j < target[i].length; j++) {
-				line(target[i][j][0] + x, target[i][j][1] + y, target[i][j-1][0] + x, target[i][j-1][1] + y);
-			}
 
 			//Render Site
 			if(drawSites){

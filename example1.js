@@ -55,7 +55,7 @@ function mousePressed(){
 	rect(100,600,200,200);
 
 	//Draw diagram frame in coordinates 0, 500
-	voronoiDrawFrame(0, 500);
+	voronoiDraw(0, 500, false);
 
 	//Get id of voronoi cell that contains the
 	//coordinates mouseX, mouseY
