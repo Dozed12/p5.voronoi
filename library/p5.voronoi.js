@@ -143,22 +143,44 @@ const VOR_CELLDRAW_SITE = 3;
 	}
 
 	//Get Cell id in position
-	p5.prototype.voronoiGetSite = function(x, y){
+	p5.prototype.voronoiGetSite = function(x, y, jitter = false){
 
-		var finalID;
-		var min = Number.MAX_VALUE;
-		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
-			let site = voronoiDiagram.cells[i].site;
-			let dist = dist2D(x,y,site.x,site.y);
-			if(dist < min){
-				min = dist;
-				finalID = i;
+		var target = cells;
+
+		//Get Site with Jitter instead
+		if(jitter){
+			target = jitterCells;
+		}
+
+		//For each cell
+		for (var i = 0; i < target.length; i++) {
+			if(raycast([x, y], target[i]))
+				return i;
+		}
+
+	}
+
+	//Raycast
+	//https://github.com/substack/point-in-polygon
+	function raycast (point, vs) {
+    
+		var x = point[0], y = point[1];
+
+		var inside = false;
+		for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+			var xi = vs[i][0], yi = vs[i][1];
+			var xj = vs[j][0], yj = vs[j][1];
+		    
+			var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+			if (intersect){
+				inside = !inside;
 			}
 		}
 
-		return finalID;
+		return inside;
 
-	}
+	};
 
 	//Compute
 	p5.prototype.voronoi = function(width, height){
