@@ -36,7 +36,8 @@ const VOR_CELLDRAW_SITE = 3;
 
 	var drawSites = true;
 
-	var jitterStep = 15;
+	var jitterStepMax = 20;
+	var jitterStepMin = 5;
 	var jitterFactor = 3;
 	var jitterFlag = true;
 	var jitterBorderFlag = true;
@@ -521,11 +522,19 @@ const VOR_CELLDRAW_SITE = 3;
 	}
 
 	/*
-	Set Jitter step
+	Set Jitter step Max
 	*/
-	p5.prototype.voronoiJitterStep = function(s){
+	p5.prototype.voronoiJitterStepMax = function(s){
 		if(s >= 0)
-			jitterStep = s;
+			jitterStepMax = s;
+	}
+
+	/*
+	Set Jitter step Min
+	*/
+	p5.prototype.voronoiJitterStepMin = function(s){
+		if(s >= 0)
+			jitterStepMin = s;
 	}
 
 	/*
@@ -614,7 +623,7 @@ const VOR_CELLDRAW_SITE = 3;
 		memEdge.push([start.x,start.y]);
 
 		//Jitter Vertices
-		var total = jitterStep;
+		var total = random(jitterStepMin,jitterStepMax+1);
 		while(total < deltaMag){
 			//Advance pos
 			pos = p5.Vector.add(start, p5.Vector.mult(deltaNorm, total));
@@ -626,7 +635,7 @@ const VOR_CELLDRAW_SITE = 3;
 			vertices.push([pos.x,pos.y]);
 			memEdge.push([pos.x,pos.y]);
 			//Advance
-			total += jitterStep;
+			total += random(jitterStepMin,jitterStepMax+1);
 		}
 
 		//Add to edge memory
