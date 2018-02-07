@@ -7,8 +7,6 @@ https://github.com/gorhill/Javascript-Voronoi
 
 */
 
-var voronoiDiagram;
-
 const VOR_CELLDRAW_BOUNDED = 1;
 const VOR_CELLDRAW_CENTER = 2;
 const VOR_CELLDRAW_SITE = 3;
@@ -17,6 +15,8 @@ const VOR_CELLDRAW_SITE = 3;
 
 	var imgWidth;
 	var imgHeight;
+
+	var voronoiDiagram;
 
 	var sites = [];
 	var cells = [];
@@ -39,7 +39,6 @@ const VOR_CELLDRAW_SITE = 3;
 	var jitterStepMax = 20;
 	var jitterStepMin = 5;
 	var jitterFactor = 3;
-	var jitterFlag = true;
 	var jitterBorderFlag = true;
 	var jitterCells = [];
 
@@ -125,16 +124,22 @@ const VOR_CELLDRAW_SITE = 3;
 	}
 
 	/*
-	Remove custom site
-	- remSite format is [x,y]
+	Remove custom site by index "dx" or by coordinates "dx,dy"
 	*/
 	p5.prototype.voronoiRemoveSite = function(dx, dy){
-		for (var i = 0; i < sites.length; i++) {
-			if(sites[i].x == dx && sites[i].y == dy){
-				sites.splice(i, 1);
-				return;
+
+		if(dy === undefined){
+			//Delete by id
+			sites.splice(dx, 1);
+		}else{
+			//Delete by coordinates
+			for (var i = 0; i < sites.length; i++) {
+				if(sites[i].x == dx && sites[i].y == dy){
+					sites.splice(i, 1);
+					return;
+				}
 			}
-		}
+		}		
 	}
 
 	//Remove all custom sites
@@ -184,7 +189,7 @@ const VOR_CELLDRAW_SITE = 3;
 	};
 
 	//Compute
-	p5.prototype.voronoi = function(width, height){
+	p5.prototype.voronoi = function(width, height, jitterFlag = false){
 		//Recycle diagram
 		voronoiObj.recycle(voronoiDiagram);
 
@@ -206,6 +211,7 @@ const VOR_CELLDRAW_SITE = 3;
 		simplifyCells();
 
 		//Create Jitter
+		jitterCells = [];
 		if(jitterFlag)
 			jitter(jitterBorderFlag);
 
@@ -333,11 +339,15 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Cell Bounded
 	function drawCellBounded(x, y, id, siteX, siteY, jitter){
 
+		//Default to normal cells
 		var target = cells;
 
 		//Draw Jitter instead
 		if(jitter){
-			target = jitterCells;
+			//Detect if jitter structure is not empty
+			if(jitterCells.length !== 0){
+				target = jitterCells;
+			}
 		}
 
 		//Stroke Settings
@@ -375,11 +385,15 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Cell Centered
 	function drawCellCenter(x, y, id, siteX, siteY, jitter){
 
+		//Default to normal cells
 		var target = cells;
 
 		//Draw Jitter instead
 		if(jitter){
-			target = jitterCells;
+			//Detect if jitter structure is not empty
+			if(jitterCells.length !== 0){
+				target = jitterCells;
+			}
 		}
 
 		//Stroke Settings
@@ -408,7 +422,7 @@ const VOR_CELLDRAW_SITE = 3;
 		//Draw
 		beginShape();
 		for (var i = 0; i < target[id].length; i++) {
-			vertex(target[id][i][0] - minX + x-dX/2, target[id][i][1] - minY + y-dY/2);
+			vertex(target[id][i][0] - minX + x - dX/2, target[id][i][1] - minY + y - dY/2);
 		}
 		endShape(CLOSE);
 
@@ -426,11 +440,15 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Cell Site
 	function drawCellSite(x, y, id, siteX, siteY, jitter){
 
+		//Default to normal cells
 		var target = cells;
 
 		//Draw Jitter instead
 		if(jitter){
-			target = jitterCells;
+			//Detect if jitter structure is not empty
+			if(jitterCells.length !== 0){
+				target = jitterCells;
+			}
 		}
 
 		//Stroke Settings
@@ -450,7 +468,7 @@ const VOR_CELLDRAW_SITE = 3;
 		//Draw
 		beginShape();
 		for (var i = 0; i < target[id].length; i++) {
-			vertex(target[id][i][0] - minX + x-(siteX-minX), target[id][i][1] - minY + y-(siteY-minY));
+			vertex(target[id][i][0] - minX + x - (siteX-minX), target[id][i][1] - minY + y - (siteY-minY));
 		}
 		endShape(CLOSE);
 
@@ -468,11 +486,15 @@ const VOR_CELLDRAW_SITE = 3;
 	//Draw Diagram
 	p5.prototype.voronoiDraw = function(x, y, fill = true, jitter = false){
 
+		//Default to normal cells
 		var target = cells;
 
 		//Draw Jitter instead
 		if(jitter){
-			target = jitterCells;
+			//Detect if jitter structure is not empty
+			if(jitterCells.length !== 0){
+				target = jitterCells;
+			}
 		}
 
 		push();
@@ -546,7 +568,6 @@ const VOR_CELLDRAW_SITE = 3;
 
 	//Creates jittered version of cells
 	function jitter(jitterEdges = true){
-		jitterCells = [];
 		var edgeMemory = [];
 		//For each cell
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
@@ -588,16 +609,7 @@ const VOR_CELLDRAW_SITE = 3;
 				}
 			}
 			jitterCells.push(vertices);
-		}		
-
-		/*TEST DRAW
-		for (var i = 0; i < jitterCells.length; i++) {
-			beginShape();
-			for (var j = 0; j < jitterCells[i].length; j++) {
-				vertex(jitterCells[i][j][0]+100, jitterCells[i][j][1]+100);
-			}
-			endShape(CLOSE);
-		}*/
+		}
 
 	}
 
