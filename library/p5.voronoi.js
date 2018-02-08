@@ -151,11 +151,15 @@ const VOR_CELLDRAW_SITE = 3;
 	//Get Cell id in position
 	p5.prototype.voronoiGetSite = function(x, y, jitter = false){
 
+		//Default to normal cells
 		var target = cells;
 
 		//Get Site with Jitter instead
 		if(jitter){
-			target = jitterCells;
+			//Detect if jitter structure is not empty
+			if(jitterCells.length !== 0){
+				target = jitterCells;
+			}
 		}
 
 		//For each cell
