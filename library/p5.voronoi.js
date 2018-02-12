@@ -55,28 +55,28 @@ const VOR_CELLDRAW_SITE = 3;
 	*/
 	p5.prototype.voronoiSiteStrokeWeight = function(w){
 		if(w >= 0)
-			siteStrokeWeight = w;	
+			siteStrokeWeight = w;
 	}
 
 	/*
 	Set cell stroke
 	*/
 	p5.prototype.voronoiCellStroke = function(c){
-		cellStroke = c;	
+		cellStroke = c;
 	}
 
 	/*
 	Set site stroke
 	*/
 	p5.prototype.voronoiSiteStroke = function(c){
-		siteStroke = c;	
+		siteStroke = c;
 	}
 
 	/*
 	Set flag to draw sites or not
 	*/
 	p5.prototype.voronoiSiteFlag = function(b){
-		drawSites = b;	
+		drawSites = b;
 	}
 
 	/*
@@ -87,7 +87,7 @@ const VOR_CELLDRAW_SITE = 3;
 	p5.prototype.voronoiRndSites = function(n, newMinimum){
 		nRandoms = n;
 		if(newMinimum !== undefined)
-			randomMinimumDist = newMinimum;		
+			randomMinimumDist = newMinimum;
 	}
 
 	/*
@@ -95,7 +95,7 @@ const VOR_CELLDRAW_SITE = 3;
 	- Minimum distance includes distance to custom sites
 	*/
 	p5.prototype.voronoiRndMinDist = function(newMinimum){
-		randomMinimumDist = newMinimum;				
+		randomMinimumDist = newMinimum;
 	}
 
 	/*
@@ -139,7 +139,7 @@ const VOR_CELLDRAW_SITE = 3;
 					return;
 				}
 			}
-		}		
+		}
 	}
 
 	//Remove all custom sites
@@ -180,7 +180,7 @@ const VOR_CELLDRAW_SITE = 3;
 		for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
 			var xi = vs[i][0], yi = vs[i][1];
 			var xj = vs[j][0], yj = vs[j][1];
-		    
+		
 			var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
 
 			if (intersect){
