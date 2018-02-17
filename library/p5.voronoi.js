@@ -39,7 +39,7 @@ const VOR_CELLDRAW_SITE = 3;
 	var jitterStepMax = 20;
 	var jitterStepMin = 5;
 	var jitterFactor = 3;
-	var jitterBorderFlag = true;
+	var jitterBorderFlag = false;
 	var jitterCells = [];
 
 	/*
@@ -217,7 +217,7 @@ const VOR_CELLDRAW_SITE = 3;
 		//Create Jitter
 		jitterCells = [];
 		if(jitterFlag)
-			jitter(jitterBorderFlag);
+			jitter();
 
 		//First instance
 		if(!notFirst)
@@ -570,8 +570,15 @@ const VOR_CELLDRAW_SITE = 3;
 		jitterStep = f;
 	}
 
+	/*
+	Set Jitter border flag
+	*/
+	p5.prototype.voronoiJitterBorder = function(f){
+		jitterBorderFlag = f;
+	}
+
 	//Creates jittered version of cells
-	function jitter(jitterEdges = true){
+	function jitter(){
 		var edgeMemory = [];
 		//For each cell
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
@@ -580,11 +587,11 @@ const VOR_CELLDRAW_SITE = 3;
 			for (var j = 0; j < voronoiDiagram.cells[i].halfedges.length; j++) {
 				const edge = voronoiDiagram.cells[i].halfedges[j];
 				//Detect diagram edge
-				if(!jitterEdges){
-					if((edge.getStartpoint().x == 0 && edge.getEndpoint().x == 0) ||
-						(edge.getStartpoint().y == 0 && edge.getEndpoint().y == 0)||
-						(edge.getStartpoint().x == imgWidth && edge.getEndpoint().x == imgWidth)||
-						(edge.getStartpoint().y == imgHeight && edge.getEndpoint().y == imgHeight)){
+				if(!jitterBorderFlag){
+					if((approx(edge.getStartpoint().x, 0, 1) && approx(edge.getEndpoint().x, 0, 1)) ||
+						(approx(edge.getStartpoint().y, 0, 1) && approx(edge.getEndpoint().y, 0, 1)) ||
+						(approx(edge.getStartpoint().x, imgWidth, 1) && approx(edge.getEndpoint().x, imgWidth, 1))||
+						(approx(edge.getStartpoint().y, imgHeight, 1) && approx(edge.getEndpoint().y, imgHeight, 1))){
 						vertices.push([edge.getStartpoint().x, edge.getStartpoint().y]);
 						continue;
 					}
@@ -615,6 +622,13 @@ const VOR_CELLDRAW_SITE = 3;
 			jitterCells.push(vertices);
 		}
 
+	}
+
+	//Match with approximation
+	function approx(v, t, m){
+		if(abs(v-t)<m)
+			return true;
+		return false;
 	}
 
 	//Jitter edge and add to vertices list
