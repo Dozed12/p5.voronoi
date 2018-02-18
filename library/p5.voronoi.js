@@ -588,10 +588,10 @@ const VOR_CELLDRAW_SITE = 3;
 				const edge = voronoiDiagram.cells[i].halfedges[j];
 				//Detect diagram edge
 				if(!jitterBorderFlag){
-					if((approx(edge.getStartpoint().x, 0, 1) && approx(edge.getEndpoint().x, 0, 1)) ||
-						(approx(edge.getStartpoint().y, 0, 1) && approx(edge.getEndpoint().y, 0, 1)) ||
-						(approx(edge.getStartpoint().x, imgWidth, 1) && approx(edge.getEndpoint().x, imgWidth, 1))||
-						(approx(edge.getStartpoint().y, imgHeight, 1) && approx(edge.getEndpoint().y, imgHeight, 1))){
+					if((round(edge.getStartpoint().x) == 0 && (round(edge.getEndpoint().x) == 0)) ||
+						(round(edge.getStartpoint().y) == 0 && (round(edge.getEndpoint().y) == 0)) ||
+						(round(edge.getStartpoint().x) == imgWidth && (round(edge.getEndpoint().x) == imgWidth))||
+						(round(edge.getStartpoint().y) == imgHeight && (round(edge.getEndpoint().y) == imgHeight))){
 						vertices.push([edge.getStartpoint().x, edge.getStartpoint().y]);
 						continue;
 					}
@@ -622,13 +622,6 @@ const VOR_CELLDRAW_SITE = 3;
 			jitterCells.push(vertices);
 		}
 
-	}
-
-	//Match with approximation
-	function approx(v, t, m){
-		if(abs(v-t)<m)
-			return true;
-		return false;
 	}
 
 	//Jitter edge and add to vertices list
