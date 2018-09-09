@@ -1,10 +1,26 @@
 
-/*
+/* 
+MIT License
 
-Gorhill implementation
+Copyright (c) 2018 Francisco Moreira
 
-https://github.com/gorhill/Javascript-Voronoi
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 */
 
 const VOR_CELLDRAW_BOUNDED = 1;
@@ -81,8 +97,6 @@ const VOR_CELLDRAW_SITE = 3;
 
 	/*
 	Add Random Sites
-	- Can set minimum distance between randoms
-	- If not set, old value is preserved
 	*/
 	p5.prototype.voronoiRndSites = function(n, newMinimum){
 		nRandoms = n;
@@ -92,7 +106,6 @@ const VOR_CELLDRAW_SITE = 3;
 
 	/*
 	Set random minimum distance
-	- Minimum distance includes distance to custom sites
 	*/
 	p5.prototype.voronoiRndMinDist = function(newMinimum){
 		randomMinimumDist = newMinimum;
@@ -100,7 +113,6 @@ const VOR_CELLDRAW_SITE = 3;
 
 	/*
 	Add custom sites
-	- newSites format is [[5,5],[10,10],[15,15],[20,20]]
 	*/
 	p5.prototype.voronoiSites = function(newSites){
 		for (var i = 0; i < newSites.length; i++) {
@@ -142,13 +154,17 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 	}
 
-	//Remove all custom sites
+	/*
+	Remove all custom sites
+	*/
 	p5.prototype.voronoiClearSites = function(){
 		cellColors = [];
 		sites = [];
 	}
 
-	//Get Cell id in position
+	/*
+	Get Cell id in position
+	*/
 	p5.prototype.voronoiGetSite = function(x, y, jitter = false){
 
 		//Default to normal cells
@@ -159,6 +175,8 @@ const VOR_CELLDRAW_SITE = 3;
 			//Detect if jitter structure is not empty
 			if(jitterCells.length !== 0){
 				target = jitterCells;
+			}else{
+				console.log("voronoiGetSite: Jitter was not generated, using normal diagram");
 			}
 		}
 
@@ -170,8 +188,10 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
-	//Raycast
-	//https://github.com/substack/point-in-polygon
+	/*
+	Raycast
+	https://github.com/substack/point-in-polygon
+	*/
 	function raycast (point, vs) {
     
 		var x = point[0], y = point[1];
@@ -192,7 +212,9 @@ const VOR_CELLDRAW_SITE = 3;
 
 	};
 
-	//Compute
+	/*
+	Compute
+	*/
 	p5.prototype.voronoi = function(width, height, jitterFlag = false){
 		//Recycle diagram
 		voronoiObj.recycle(voronoiDiagram);
@@ -224,7 +246,9 @@ const VOR_CELLDRAW_SITE = 3;
 			notFirst = true;
 	}
 
-	//Simplify Gorhill structure to cells
+	/*
+	Simplify Gorhill structure to cells
+	*/
 	function simplifyCells(){
 		cells = [];
 		for (var i = 0; i < voronoiDiagram.cells.length; i++) {
@@ -236,7 +260,23 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 	}
 
-	//Add Random Sites
+	/*
+	Returns Diagram for more advanced uses
+	*/
+	p5.prototype.voronoiGetDiagram = function(){
+		return voronoiDiagram;
+	}
+
+	/*
+	Returns simplified cells for more advanced use
+	*/
+	p5.prototype.voronoiGetCells = function(){
+		return cells;
+	}
+
+	/*
+	Add Random Sites
+	*/
 	function setRandoms(width, height){
 		for (var i = 0; i < nRandoms; i++) {
 
@@ -268,12 +308,16 @@ const VOR_CELLDRAW_SITE = 3;
 		}
 	}
 
-	//Eucledian Distance
+	/*
+	Eucledian Distance
+	*/
 	function dist2D(ix, iy, fx, fy){
 		return (sqrt(sq(ix - fx)+sq(iy - fy)))
 	}
 
-	//Get voronoi cell neighbors
+	/*
+	Get voronoi cell neighbors
+	*/
 	p5.prototype.voronoiNeighbors = function(id){
 
 		if(id >= voronoiDiagram.cells.length || id === undefined)
@@ -301,6 +345,9 @@ const VOR_CELLDRAW_SITE = 3;
 		return uniqueNeighbors;
 	}
 
+	/*
+	Remove duplicates in array
+	*/
 	function removeDuplicates(arr){
 	    let unique_array = []
 	    for(let i = 0;i < arr.length; i++){
@@ -311,8 +358,10 @@ const VOR_CELLDRAW_SITE = 3;
 	    return unique_array;
 	}
 
-	//Draw a voronoi Cell
-	p5.prototype.voronoiDrawCell = function(x, y, id, type, fill = true, jitter = false){
+	/*
+	Draw a voronoi Cell
+	*/
+	p5.prototype.voronoiDrawCell = function(x, y, id, type, fill = false, jitter = false){
 
 		if(id >= voronoiDiagram.cells.length || id === undefined)
 			return;
@@ -330,19 +379,6 @@ const VOR_CELLDRAW_SITE = 3;
 		if(!fill)
 			noFill();
 
-		if (type == VOR_CELLDRAW_BOUNDED) {
-			drawCellBounded(x, y, id, siteX, siteY, jitter);			
-		}else if(type == VOR_CELLDRAW_CENTER){
-			drawCellCenter(x, y, id, siteX, siteY, jitter);
-		}else if(type == VOR_CELLDRAW_SITE){
-			drawCellSite(x, y, id, siteX, siteY, jitter);
-		}
-
-	}
-
-	//Draw Cell Bounded
-	function drawCellBounded(x, y, id, siteX, siteY, jitter){
-
 		//Default to normal cells
 		var target = cells;
 
@@ -351,8 +387,26 @@ const VOR_CELLDRAW_SITE = 3;
 			//Detect if jitter structure is not empty
 			if(jitterCells.length !== 0){
 				target = jitterCells;
+			}else{
+				console.log("voronoiDrawCell: Jitter was not generated, using normal diagram");
 			}
 		}
+
+		//Choose draw mode
+		if (type == VOR_CELLDRAW_BOUNDED) {
+			drawCellBounded(x, y, id, siteX, siteY, jitter, target);			
+		}else if(type == VOR_CELLDRAW_CENTER){
+			drawCellCenter(x, y, id, siteX, siteY, jitter, target);
+		}else if(type == VOR_CELLDRAW_SITE){
+			drawCellSite(x, y, id, siteX, siteY, jitter, target);
+		}
+
+	}
+
+	/*
+	Draw Cell Bounded
+	*/
+	function drawCellBounded(x, y, id, siteX, siteY, jitter, target){
 
 		//Stroke Settings
 		strokeWeight(cellStrokeWeight);
@@ -386,19 +440,10 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
-	//Draw Cell Centered
-	function drawCellCenter(x, y, id, siteX, siteY, jitter){
-
-		//Default to normal cells
-		var target = cells;
-
-		//Draw Jitter instead
-		if(jitter){
-			//Detect if jitter structure is not empty
-			if(jitterCells.length !== 0){
-				target = jitterCells;
-			}
-		}
+	/*
+	Draw Cell Centered
+	*/
+	function drawCellCenter(x, y, id, siteX, siteY, jitter, target){
 
 		//Stroke Settings
 		strokeWeight(cellStrokeWeight);
@@ -441,19 +486,10 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
-	//Draw Cell Site
-	function drawCellSite(x, y, id, siteX, siteY, jitter){
-
-		//Default to normal cells
-		var target = cells;
-
-		//Draw Jitter instead
-		if(jitter){
-			//Detect if jitter structure is not empty
-			if(jitterCells.length !== 0){
-				target = jitterCells;
-			}
-		}
+	/*
+	Draw Cell Site
+	*/
+	function drawCellSite(x, y, id, siteX, siteY, jitter, target){
 
 		//Stroke Settings
 		strokeWeight(cellStrokeWeight);
@@ -487,7 +523,9 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
-	//Draw Diagram
+	/*
+	Draw Diagram
+	*/
 	p5.prototype.voronoiDraw = function(x, y, fill = true, jitter = false){
 
 		//Default to normal cells
@@ -498,6 +536,8 @@ const VOR_CELLDRAW_SITE = 3;
 			//Detect if jitter structure is not empty
 			if(jitterCells.length !== 0){
 				target = jitterCells;
+			}else{
+				console.log("voronoiDraw: Jitter was not generated, using normal diagram");
 			}
 		}
 
@@ -538,7 +578,9 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
-	//Set fill color from cell
+	/*
+	Set fill color from cell
+	*/
 	function setFillColorCell(cellId){
 		for (var c = 0; c < cellColors.length; c++) {
 			if(cellColors[c][0] == voronoiDiagram.cells[cellId].site.x && cellColors[c][1] == voronoiDiagram.cells[cellId].site.y){
@@ -567,17 +609,31 @@ const VOR_CELLDRAW_SITE = 3;
 	Set Jitter factor
 	*/
 	p5.prototype.voronoiJitterFactor = function(f){
-		jitterStep = f;
+		jitterFactor = f;
 	}
-
+	
 	/*
 	Set Jitter border flag
 	*/
 	p5.prototype.voronoiJitterBorder = function(f){
 		jitterBorderFlag = f;
 	}
+	
+	/*
+	Get the edges with jitter
+	*/
+	p5.prototype.voronoiGetCellsJitter = function(f){
+		if(jitterCells.length !== 0){
+			return jitterCells;
+		}else{
+			console.log("voronoiGetCellsJitter: Jitter was not generated, using normal diagram");
+			return cells;
+		}
+	}
 
-	//Creates jittered version of cells
+	/*
+	Creates jittered version of cells
+	*/
 	function jitter(){
 		var edgeMemory = [];
 		//For each cell
@@ -624,7 +680,9 @@ const VOR_CELLDRAW_SITE = 3;
 
 	}
 
-	//Jitter edge and add to vertices list
+	/*
+	Jitter edge and add to vertices list
+	*/
 	function jitterEdge(vertices, edge, edgeMemory){
 
 		//Edge info to save
