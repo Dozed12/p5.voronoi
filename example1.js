@@ -96,9 +96,16 @@ function mousePressed(){
 	//coordinates 0,0
 	var cellId = voronoiGetSite(mouseX, mouseY, false);
 
-	//Get ids of voronoi cells neighboring cellId
-	//Ctrl+Shift+I on Chrome to open the console
-	console.log(cellId + ": " + voronoiNeighbors(cellId));
+	if(cellId !== undefined){
+
+		//Get ids of voronoi cells neighboring cellId
+		//Ctrl+Shift+I on Chrome to open the console
+		console.log(cellId + ": " + voronoiNeighbors(cellId));
+
+		//Get color of selected voronoi cell
+		console.log("Color: " + voronoiGetColor(cellId));
+
+	}
 
 	//Draw a specific voronoi cell using different centers
 

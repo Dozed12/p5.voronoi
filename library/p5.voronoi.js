@@ -582,9 +582,17 @@ const VOR_CELLDRAW_SITE = 3;
 	Set fill color from cell
 	*/
 	function setFillColorCell(cellId){
+		let color = voronoiGetColor(cellId);
+		fill(color);
+	}
+
+	/*
+	Get color of cell id
+	*/
+	p5.prototype.voronoiGetColor = function(cellId){
 		for (var c = 0; c < cellColors.length; c++) {
 			if(cellColors[c][0] == voronoiDiagram.cells[cellId].site.x && cellColors[c][1] == voronoiDiagram.cells[cellId].site.y){
-				fill(cellColors[c][2]);
+				return cellColors[c][2];
 			}
 		}
 	}
